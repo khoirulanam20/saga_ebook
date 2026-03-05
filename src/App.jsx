@@ -26,6 +26,7 @@ import Register from './pages/auth/Register';
 
 // User Pages
 import UserDashboard from './pages/user/UserDashboard';
+import UserLearning from './pages/user/UserLearning';
 
 // Admin Pages
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -116,6 +117,9 @@ export default function App() {
             <Route path="/dashboard" element={<UserRoute><GuestLayout /></UserRoute>}>
               <Route index element={<UserDashboard />} />
             </Route>
+
+            {/* Standalone User Routes (No Navbar/Footer for Learning Mode) */}
+            <Route path="/dashboard/learning/:id" element={<UserRoute><UserLearning /></UserRoute>} />
 
             {/* Admin Routes */}
             <Route path="/admin" element={<AdminLayout />}>

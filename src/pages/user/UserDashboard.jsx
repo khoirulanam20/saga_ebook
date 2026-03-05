@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { BookOpen, Video, Receipt, User, Download, ExternalLink } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { products } from '../../data/products';
@@ -15,6 +15,7 @@ const transactions = [
 
 export default function UserDashboard() {
     const { user } = useAuth();
+    const navigate = useNavigate();
 
     return (
         <div className="user-dashboard">
@@ -64,16 +65,16 @@ export default function UserDashboard() {
                                     <h3 className="my-product-title">{product.title}</h3>
                                     <div className="my-product-actions">
                                         {product.category === 'ebook' && (
-                                            <button className="access-btn"><Download size={14} /> Unduh</button>
+                                            <button className="access-btn" onClick={() => navigate(`/dashboard/learning/${product.id}`)}><Download size={14} /> Unduh / Baca</button>
                                         )}
                                         {product.category === 'video' && (
-                                            <button className="access-btn"><Video size={14} /> Tonton</button>
+                                            <button className="access-btn" onClick={() => navigate(`/dashboard/learning/${product.id}`)}><Video size={14} /> Tonton</button>
                                         )}
                                         {product.category === 'webinar' && (
-                                            <button className="access-btn"><ExternalLink size={14} /> Akses</button>
+                                            <button className="access-btn" onClick={() => navigate(`/dashboard/learning/${product.id}`)}><ExternalLink size={14} /> Akses Link</button>
                                         )}
                                         {product.category === 'offline' && (
-                                            <button className="access-btn"><ExternalLink size={14} /> Jadwal</button>
+                                            <button className="access-btn" onClick={() => navigate(`/dashboard/learning/${product.id}`)}><ExternalLink size={14} /> Jadwal</button>
                                         )}
                                     </div>
                                 </div>

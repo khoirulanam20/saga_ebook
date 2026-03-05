@@ -1,0 +1,213 @@
+.user-learning {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background: var(--color-bg);
+}
+
+.learning-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-4) var(--space-6);
+    background: var(--color-bg-secondary);
+    border-bottom: 1px solid var(--color-border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.learning-back {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    transition: color var(--transition-fast);
+}
+
+.learning-back:hover {
+    color: var(--color-text-primary);
+}
+
+.learning-title {
+    font-size: var(--text-lg);
+    font-weight: var(--font-bold);
+    color: var(--color-text-primary);
+    margin: 0;
+}
+
+.learning-layout {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* Sidebar */
+.learning-sidebar {
+    width: 320px;
+    background: var(--color-bg-secondary);
+    border-right: 1px solid var(--color-border);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.sidebar-header {
+    padding: var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.sidebar-header h3 {
+    font-size: var(--text-base);
+    color: var(--color-text-primary);
+    margin: 0;
+}
+
+.learning-materials {
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-2);
+}
+
+.material-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    padding: var(--space-3);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    color: var(--color-text-secondary);
+}
+
+.material-item:hover {
+    background: var(--color-bg-card-hover);
+    color: var(--color-text-primary);
+}
+
+.material-item.active {
+    background: var(--color-accent-dim);
+    color: var(--color-accent-light);
+    border: 1px solid rgba(220, 38, 38, 0.2);
+}
+
+.material-icon {
+    margin-top: 2px;
+}
+
+.material-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.material-title {
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    line-height: 1.4;
+}
+
+.material-meta {
+    font-size: var(--text-xs);
+    opacity: 0.8;
+}
+
+/* Main Content */
+.learning-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    background: var(--color-bg);
+}
+
+.video-container {
+    width: 100%;
+    background: #000;
+    aspect-ratio: 16/9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.ebook-container {
+    padding: var(--space-8);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    flex: 1;
+    background: var(--color-bg);
+}
+
+.ebook-icon-wrap {
+    width: 80px;
+    height: 80px;
+    background: var(--color-bg-secondary);
+    border-radius: var(--radius-xl);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--space-4);
+    border: 1px solid var(--color-border);
+}
+
+.content-details {
+    padding: var(--space-6) var(--space-8);
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.content-title {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-bold);
+    color: var(--color-text-primary);
+    margin-bottom: var(--space-2);
+}
+
+.content-meta {
+    display: flex;
+    gap: var(--space-4);
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-6);
+}
+
+.content-desc {
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+    line-height: 1.7;
+    background: var(--color-bg-secondary);
+    padding: var(--space-5);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border);
+}
+
+@media (max-width: 768px) {
+    .learning-layout {
+        flex-direction: column;
+    }
+
+    .learning-sidebar {
+        width: 100%;
+        height: 300px;
+        border-right: none;
+        border-bottom: 1px solid var(--color-border);
+    }
+
+    .video-container {
+        position: sticky;
+        top: 0;
+        z-index: 5;
+    }
+
+    .content-details {
+        padding: var(--space-4);
+    }
+}
