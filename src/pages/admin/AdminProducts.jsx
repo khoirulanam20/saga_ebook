@@ -1,82 +1,21 @@
-import { useState, useRef } from 'react';
-import { Plus, Search, Pencil, Trash2, X, Upload, ImageIcon } from 'lucide-react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Plus, Search, Pencil, Trash2 } from 'lucide-react';
 import { products as initialProducts } from '../../data/products';
 import { formatCurrency, getCategoryLabel } from '../../utils/helpers';
 import toast from 'react-hot-toast';
 import './Admin.css';
 
-const emptyForm = { title: '', category: 'ebook', price: '', originalPrice: '', description: '', longDescription: '', badge: '', imageUrl: '', imageFile: null, imagePreview: '', benefits: [], materials: [] };
-
 export default function AdminProducts() {
+    const navigate = useNavigate();
     const [items, setItems] = useState(initialProducts);
     const [search, setSearch] = useState('');
-    const [modal, setModal] = useState(false);
-    const [form, setForm] = useState(emptyForm);
-    const [editId, setEditId] = useState(null);
     const [deleteConfirm, setDeleteConfirm] = useState(null);
-    const [dragOver, setDragOver] = useState(false);
-    const [newBenefit, setNewBenefit] = useState('');
-    const [newMaterialTitle, setNewMaterialTitle] = useState('');
-    const [newMaterialMeta, setNewMaterialMeta] = useState('');
-    const fileInputRef = useRef(null);
 
     const filtered = items.filter(p => p.title.toLowerCase().includes(search.toLowerCase()));
 
-    const openAdd = () => { setForm(emptyForm); setEditId(null); setModal(true); };
-    const openEdit = (p) => {
-        setForm({
-            title: p.title, category: p.category, price: p.price, originalPrice: p.originalPrice,
-            description: p.description, longDescription: p.longDescription || '', badge: p.badge || '',
-            imageUrl: p.thumbnail, imageFile: null, imagePreview: p.thumbnail,
-            benefits: p.benefits ? [...p.benefits] : [],
-            materials: p.materials ? [...p.materials] : []
-        });
-        setEditId(p.id);
-        setModal(true);
-    };
-
-    const handleImageFile = (file) => {
-        if (!file) return;
-        if (!file.type.startsWith('image/')) return toast.error('File harus berupa gambar');
-        if (file.size > 2 * 1024 * 1024) return toast.error('Ukuran file maks 2MB');
-        const preview = URL.createObjectURL(file);
-        setForm(prev => ({ ...prev, imageFile: file, imagePreview: preview }));
-    };
-
-    const handleDrop = (e) => {
-        e.preventDefault();
-        setDragOver(false);
-        handleImageFile(e.dataTransfer.files[0]);
-    };
-
-    const addBenefit = () => {
-        if (!newBenefit.trim()) return;
-        setForm(prev => ({ ...prev, benefits: [...prev.benefits, newBenefit.trim()] }));
-        setNewBenefit('');
-    };
-
-    const addMaterial = () => {
-        if (!newMaterialTitle.trim()) return;
-        setForm(prev => ({
-            ...prev,
-            materials: [...prev.materials, { title: newMaterialTitle.trim(), duration: newMaterialMeta.trim() || 'N/A' }]
-        }));
-        setNewMaterialTitle('');
-        setNewMaterialMeta('');
-    };
-
-    const handleSave = () => {
-        if (!form.title || !form.price) return toast.error('Lengkapi data produk');
-        const thumbnail = form.imagePreview || form.imageUrl || 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&q=80';
-        if (editId) {
-            setItems(prev => prev.map(p => p.id === editId ? { ...p, ...form, price: Number(form.price), originalPrice: Number(form.originalPrice), thumbnail } : p));
-            toast.success('Produk diperbarui');
-        } else {
-            setItems(prev => [...prev, { ...form, id: Date.now(), price: Number(form.price), originalPrice: Number(form.originalPrice), thumbnail, rating: 0, totalRatings: 0, sold: 0, featured: false, tags: [] }]);
-            toast.success('Produk ditambahkan');
-        }
-        setModal(false);
-    };
+    const openAdd = () => navigate('/admin/products/create');
+    const openEdit = (p) => navigate(`/admin/products/${p.id}/edit`);
 
     const confirmDelete = (id) => setDeleteConfirm(id);
     const handleDelete = () => {
@@ -136,118 +75,6 @@ export default function AdminProducts() {
                     {filtered.length} produk ditampilkan
                 </div>
             </div>
-
-            {/* Add/Edit Modal */}
-            {modal && (
-                <div className="modal-overlay" onClick={() => setModal(false)}>
-                    <div className="modal modal-wide" onClick={e => e.stopPropagation()}>
-                        <div className="modal-header">
-                            <h3 className="modal-title">{editId ? 'Edit Produk' : 'Tambah Produk Baru'}</h3>
-                            <button className="btn-icon" onClick={() => setModal(false)}><X size={18} /></button>
-                        </div>
-
-                        {/* Image upload zone */}
-                        <div
-                            className={`image-upload-zone ${dragOver ? 'drag-over' : ''}`}
-                            onDragOver={e => { e.preventDefault(); setDragOver(true); }}
-                            onDragLeave={() => setDragOver(false)}
-                            onDrop={handleDrop}
-                            onClick={() => fileInputRef.current?.click()}
-                        >
-                            {form.imagePreview ? (
-                                <div className="image-preview-wrap">
-                                    <img src={form.imagePreview} alt="Preview" className="image-preview" />
-                                    <button className="image-remove-btn" onClick={e => { e.stopPropagation(); setForm(prev => ({ ...prev, imageFile: null, imagePreview: '', imageUrl: '' })); }}>
-                                        <X size={14} />
-                                    </button>
-                                </div>
-                            ) : (
-                                <div className="upload-placeholder">
-                                    <Upload size={28} />
-                                    <p>Drag & drop atau <span>klik untuk upload</span> gambar produk</p>
-                                    <p className="upload-hint">PNG, JPG, WebP · Maks 2MB · Rasio 16:9 direkomendasikan</p>
-                                </div>
-                            )}
-                            <input ref={fileInputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={e => handleImageFile(e.target.files[0])} />
-                        </div>
-
-                        {!form.imagePreview && (
-                            <div className="modal-form" style={{ marginTop: 0 }}>
-                                <div className="form-group">
-                                    <label>Atau masukkan URL Gambar</label>
-                                    <input
-                                        value={form.imageUrl}
-                                        onChange={e => setForm({ ...form, imageUrl: e.target.value, imagePreview: e.target.value })}
-                                        placeholder="https://contoh.com/gambar.jpg"
-                                    />
-                                </div>
-                            </div>
-                        )}
-
-                        <div className="modal-form" style={{ maxHeight: '60vh', overflowY: 'auto' }}>
-                            <div className="form-group"><label>Judul Produk *</label><input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} placeholder="Nama produk" /></div>
-                            <div className="form-group"><label>Kategori</label>
-                                <select value={form.category} onChange={e => setForm({ ...form, category: e.target.value })}>
-                                    {['ebook', 'video', 'webinar', 'offline'].map(c => <option key={c} value={c}>{getCategoryLabel(c)}</option>)}
-                                </select>
-                            </div>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-3)' }}>
-                                <div className="form-group"><label>Harga Jual *</label><input type="number" value={form.price} onChange={e => setForm({ ...form, price: e.target.value })} placeholder="Rp" /></div>
-                                <div className="form-group"><label>Harga Normal (coret)</label><input type="number" value={form.originalPrice} onChange={e => setForm({ ...form, originalPrice: e.target.value })} placeholder="Rp" /></div>
-                            </div>
-                            <div className="form-group"><label>Deskripsi Singkat (Katalog)</label><textarea rows="2" value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} placeholder="Ditampilkan di kartu katalog produk" /></div>
-
-                            {/* SALES FUNNEL FIELDS */}
-                            <div className="form-group" style={{ padding: 'var(--space-4)', background: 'var(--color-bg-secondary)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--color-border)' }}>
-                                <h4 style={{ marginBottom: 'var(--space-3)', fontSize: 'var(--text-sm)', color: 'var(--color-accent-light)' }}>Pengaturan Sales Funnel & Detail Produk</h4>
-
-                                <div className="form-group">
-                                    <label>Deskripsi Lengkap</label>
-                                    <textarea rows="4" value={form.longDescription} onChange={e => setForm({ ...form, longDescription: e.target.value })} placeholder="Deskripsi rinci di halaman penjelasan..." />
-                                </div>
-                                <div className="form-group"><label>Badge (opsional)</label><input value={form.badge} onChange={e => setForm({ ...form, badge: e.target.value })} placeholder="Contoh: New, Bestseller, Hot" /></div>
-
-                                <div className="form-group" style={{ marginTop: 'var(--space-4)' }}>
-                                    <label>Benefit / Apa yang didapat</label>
-                                    <div style={{ display: 'flex', gap: 8 }}>
-                                        <input value={newBenefit} onChange={e => setNewBenefit(e.target.value)} placeholder="Akses seumur hidup..." onKeyDown={e => e.key === 'Enter' && addBenefit()} style={{ flex: 1 }} />
-                                        <button type="button" className="btn-modal-save" style={{ padding: 'var(--space-2) var(--space-4)', fontSize: 'var(--text-sm)' }} onClick={addBenefit}>+</button>
-                                    </div>
-                                    <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 8 }}>
-                                        {form.benefits.map((b, i) => (
-                                            <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '6px 10px', background: 'var(--color-bg)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', fontSize: 'var(--text-sm)' }}>
-                                                <span>✓ {b}</span>
-                                                <button type="button" onClick={() => setForm(prev => ({ ...prev, benefits: prev.benefits.filter((_, idx) => idx !== i) }))} style={{ color: 'var(--color-error)' }}><X size={14} /></button>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                <div className="form-group" style={{ marginTop: 'var(--space-4)' }}>
-                                    <label>Silabus / Isi Materi</label>
-                                    <div style={{ display: 'flex', gap: 8 }}>
-                                        <input value={newMaterialTitle} onChange={e => setNewMaterialTitle(e.target.value)} placeholder="Judul bab" style={{ flex: 2 }} onKeyDown={e => e.key === 'Enter' && addMaterial()} />
-                                        <input value={newMaterialMeta} onChange={e => setNewMaterialMeta(e.target.value)} placeholder="Meta (ex: 15 video)" style={{ flex: 1 }} onKeyDown={e => e.key === 'Enter' && addMaterial()} />
-                                        <button type="button" className="btn-modal-save" style={{ padding: 'var(--space-2) var(--space-4)', fontSize: 'var(--text-sm)' }} onClick={addMaterial}>+</button>
-                                    </div>
-                                    <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 8 }}>
-                                        {form.materials.map((m, i) => (
-                                            <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '6px 10px', background: 'var(--color-bg)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', fontSize: 'var(--text-sm)' }}>
-                                                <div><span style={{ fontWeight: 600, marginRight: 8 }}>{String(i + 1).padStart(2, '0')}</span> {m.title} <span style={{ color: 'var(--color-text-muted)', fontSize: '11px', marginLeft: 8 }}>({m.duration || m.pages || m.videos})</span></div>
-                                                <button type="button" onClick={() => setForm(prev => ({ ...prev, materials: prev.materials.filter((_, idx) => idx !== i) }))} style={{ color: 'var(--color-error)' }}><X size={14} /></button>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="modal-actions">
-                            <button className="btn-modal-cancel" onClick={() => setModal(false)}>Batal</button>
-                            <button className="btn-modal-save" onClick={handleSave}>{editId ? 'Simpan Perubahan' : 'Tambah Produk'}</button>
-                        </div>
-                    </div>
-                </div>
-            )}
 
             {/* Delete Confirm */}
             {deleteConfirm && (

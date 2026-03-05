@@ -5,6 +5,7 @@ import { products } from '../../data/products';
 import { testimonials } from '../../data/testimonials';
 import { formatCurrency, getCategoryLabel } from '../../utils/helpers';
 import { useCart } from '../../context/CartContext';
+import { useAuth } from '../../context/AuthContext';
 import TestimonialCard from '../../components/shared/TestimonialCard';
 import toast from 'react-hot-toast';
 import './ProductSales.css';
@@ -15,6 +16,7 @@ export default function ProductSales() {
     const { id } = useParams();
     const navigate = useNavigate();
     const { addToCart } = useCart();
+    const { user } = useAuth();
     const product = products.find(p => p.id === Number(id));
     const [step, setStep] = useState(0);
     const [openFaq, setOpenFaq] = useState(null);
@@ -26,6 +28,10 @@ export default function ProductSales() {
     const handleNext = () => {
         if (step < STEPS.length - 1) setStep(step + 1);
         else {
+            if (!user) {
+                toast.error('Harap login terlebih dahulu untuk melanjutkan pembayaran.');
+                return navigate('/login');
+            }
             addToCart(product);
             navigate('/checkout');
         }

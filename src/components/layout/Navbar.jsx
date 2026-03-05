@@ -53,10 +53,12 @@ export default function Navbar() {
                 </ul>
 
                 <div className="navbar__actions">
-                    <Link to="/checkout" className="navbar__cart">
-                        <ShoppingCart size={20} />
-                        {count > 0 && <span className="navbar__cart-badge">{count}</span>}
-                    </Link>
+                    {user && (
+                        <Link to="/checkout" className="navbar__cart">
+                            <ShoppingCart size={20} />
+                            {count > 0 && <span className="navbar__cart-badge">{count}</span>}
+                        </Link>
+                    )}
 
                     {user ? (
                         <div className="navbar__user">

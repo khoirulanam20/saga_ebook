@@ -5,6 +5,7 @@ import { testimonials } from '../../data/testimonials';
 import TestimonialCard from '../../components/shared/TestimonialCard';
 import { formatCurrency } from '../../utils/helpers';
 import { useCart } from '../../context/CartContext';
+import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import './PackageLanding.css';
@@ -13,9 +14,14 @@ export default function PackageLanding() {
     const { slug } = useParams();
     const navigate = useNavigate();
     const { addToCart } = useCart();
+    const { user } = useAuth();
     const pkg = packages.find(p => p.slug === slug) || packages[1];
 
     const handleBuy = () => {
+        if (!user) {
+            toast.error('Harap login terlebih dahulu untuk membeli paket.');
+            return navigate('/login');
+        }
         addToCart({ id: `pkg-${pkg.id}`, title: pkg.title, price: pkg.price, type: 'package' });
         navigate('/checkout');
     };

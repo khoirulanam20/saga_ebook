@@ -30,6 +30,7 @@ import UserDashboard from './pages/user/UserDashboard';
 // Admin Pages
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminProducts from './pages/admin/AdminProducts';
+import AdminProductForm from './pages/admin/AdminProductForm';
 import AdminPackages from './pages/admin/AdminPackages';
 import AdminTransactions from './pages/admin/AdminTransactions';
 import AdminUsers from './pages/admin/AdminUsers';
@@ -97,10 +98,14 @@ export default function App() {
               <Route path="/products/:id" element={<ProductDetail />} />
               <Route path="/products/:id/buy" element={<ProductSales />} />
               <Route path="/packages/:slug" element={<PackageLanding />} />
-              <Route path="/checkout" element={<Checkout />} />
               <Route path="/testimonials" element={<Testimonials />} />
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
+            </Route>
+
+            {/* Checkout Route - Protected (must be logged in) */}
+            <Route path="/checkout" element={<UserRoute><GuestLayout /></UserRoute>}>
+              <Route index element={<Checkout />} />
             </Route>
 
             {/* Auth Routes */}
@@ -116,6 +121,8 @@ export default function App() {
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<AdminDashboard />} />
               <Route path="products" element={<AdminProducts />} />
+              <Route path="products/create" element={<AdminProductForm />} />
+              <Route path="products/:id/edit" element={<AdminProductForm />} />
               <Route path="packages" element={<AdminPackages />} />
               <Route path="transactions" element={<AdminTransactions />} />
               <Route path="users" element={<AdminUsers />} />

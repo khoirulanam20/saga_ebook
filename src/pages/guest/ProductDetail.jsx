@@ -6,6 +6,7 @@ import { testimonials } from '../../data/testimonials';
 import TestimonialCard from '../../components/shared/TestimonialCard';
 import { formatCurrency, getCategoryLabel } from '../../utils/helpers';
 import { useCart } from '../../context/CartContext';
+import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
 import './ProductDetail.css';
 
@@ -13,6 +14,7 @@ export default function ProductDetail() {
     const { id } = useParams();
     const navigate = useNavigate();
     const { addToCart, isInCart } = useCart();
+    const { user } = useAuth();
     const product = products.find(p => p.id === Number(id));
     const [openSection, setOpenSection] = useState(null);
     const inCart = product ? isInCart(product.id) : false;
@@ -31,7 +33,20 @@ export default function ProductDetail() {
 
     // Route to sales funnel: intro → product overview → education → pre-checkout
     const handleBuy = () => {
+        if (!user) {
+            toast.error('Harap login terlebih dahulu untuk melakukan pembelian.');
+            return navigate('/login');
+        }
         navigate(`/products/${product.id}/buy`);
+    };
+
+    const handleAddToCart = () => {
+        if (!user) {
+            toast.error('Harap login terlebih dahulu.');
+            return navigate('/login');
+        }
+        addToCart(product);
+        toast.success('Ditambahkan ke keranjang!');
     };
 
     return (
@@ -129,7 +144,7 @@ export default function ProductDetail() {
                                 </button>
                                 <button
                                     className={`btn-cart ${inCart ? 'in-cart' : ''}`}
-                                    onClick={() => { addToCart(product); toast.success('Ditambahkan ke keranjang!'); }}
+                                    onClick={handleAddToCart}
                                     disabled={inCart}
                                 >
                                     <ShoppingCart size={17} />
