@@ -151,8 +151,6 @@
 }
 
 /* ── Link Columns ── */
-.footer__col {}
-
 .footer__col-title {
     font-size: var(--text-xs);
     font-weight: var(--font-bold);

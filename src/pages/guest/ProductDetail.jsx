@@ -29,9 +29,9 @@ export default function ProductDetail() {
     const productTestimonials = testimonials.filter(t => t.productId === product.id);
     const related = products.filter(p => p.category === product.category && p.id !== product.id).slice(0, 3);
 
+    // Route to sales funnel: intro → product overview → education → pre-checkout
     const handleBuy = () => {
-        addToCart(product);
-        navigate('/checkout');
+        navigate(`/products/${product.id}/buy`);
     };
 
     return (

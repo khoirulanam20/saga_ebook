@@ -5,7 +5,7 @@ import { formatCurrency, getCategoryLabel } from '../../utils/helpers';
 import toast from 'react-hot-toast';
 import './Admin.css';
 
-const emptyForm = { title: '', category: 'ebook', price: '', originalPrice: '', description: '', badge: '', imageUrl: '', imageFile: null, imagePreview: '' };
+const emptyForm = { title: '', category: 'ebook', price: '', originalPrice: '', description: '', longDescription: '', badge: '', imageUrl: '', imageFile: null, imagePreview: '', benefits: [], materials: [] };
 
 export default function AdminProducts() {
     const [items, setItems] = useState(initialProducts);
@@ -15,13 +15,22 @@ export default function AdminProducts() {
     const [editId, setEditId] = useState(null);
     const [deleteConfirm, setDeleteConfirm] = useState(null);
     const [dragOver, setDragOver] = useState(false);
+    const [newBenefit, setNewBenefit] = useState('');
+    const [newMaterialTitle, setNewMaterialTitle] = useState('');
+    const [newMaterialMeta, setNewMaterialMeta] = useState('');
     const fileInputRef = useRef(null);
 
     const filtered = items.filter(p => p.title.toLowerCase().includes(search.toLowerCase()));
 
     const openAdd = () => { setForm(emptyForm); setEditId(null); setModal(true); };
     const openEdit = (p) => {
-        setForm({ title: p.title, category: p.category, price: p.price, originalPrice: p.originalPrice, description: p.description, badge: p.badge || '', imageUrl: p.thumbnail, imageFile: null, imagePreview: p.thumbnail });
+        setForm({
+            title: p.title, category: p.category, price: p.price, originalPrice: p.originalPrice,
+            description: p.description, longDescription: p.longDescription || '', badge: p.badge || '',
+            imageUrl: p.thumbnail, imageFile: null, imagePreview: p.thumbnail,
+            benefits: p.benefits ? [...p.benefits] : [],
+            materials: p.materials ? [...p.materials] : []
+        });
         setEditId(p.id);
         setModal(true);
     };
@@ -38,6 +47,22 @@ export default function AdminProducts() {
         e.preventDefault();
         setDragOver(false);
         handleImageFile(e.dataTransfer.files[0]);
+    };
+
+    const addBenefit = () => {
+        if (!newBenefit.trim()) return;
+        setForm(prev => ({ ...prev, benefits: [...prev.benefits, newBenefit.trim()] }));
+        setNewBenefit('');
+    };
+
+    const addMaterial = () => {
+        if (!newMaterialTitle.trim()) return;
+        setForm(prev => ({
+            ...prev,
+            materials: [...prev.materials, { title: newMaterialTitle.trim(), duration: newMaterialMeta.trim() || 'N/A' }]
+        }));
+        setNewMaterialTitle('');
+        setNewMaterialMeta('');
     };
 
     const handleSave = () => {
@@ -159,7 +184,7 @@ export default function AdminProducts() {
                             </div>
                         )}
 
-                        <div className="modal-form">
+                        <div className="modal-form" style={{ maxHeight: '60vh', overflowY: 'auto' }}>
                             <div className="form-group"><label>Judul Produk *</label><input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} placeholder="Nama produk" /></div>
                             <div className="form-group"><label>Kategori</label>
                                 <select value={form.category} onChange={e => setForm({ ...form, category: e.target.value })}>
@@ -170,8 +195,51 @@ export default function AdminProducts() {
                                 <div className="form-group"><label>Harga Jual *</label><input type="number" value={form.price} onChange={e => setForm({ ...form, price: e.target.value })} placeholder="Rp" /></div>
                                 <div className="form-group"><label>Harga Normal (coret)</label><input type="number" value={form.originalPrice} onChange={e => setForm({ ...form, originalPrice: e.target.value })} placeholder="Rp" /></div>
                             </div>
-                            <div className="form-group"><label>Deskripsi</label><textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} placeholder="Deskripsi singkat produk" /></div>
-                            <div className="form-group"><label>Badge (opsional)</label><input value={form.badge} onChange={e => setForm({ ...form, badge: e.target.value })} placeholder="Contoh: New, Bestseller, Hot" /></div>
+                            <div className="form-group"><label>Deskripsi Singkat (Katalog)</label><textarea rows="2" value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} placeholder="Ditampilkan di kartu katalog produk" /></div>
+
+                            {/* SALES FUNNEL FIELDS */}
+                            <div className="form-group" style={{ padding: 'var(--space-4)', background: 'var(--color-bg-secondary)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--color-border)' }}>
+                                <h4 style={{ marginBottom: 'var(--space-3)', fontSize: 'var(--text-sm)', color: 'var(--color-accent-light)' }}>Pengaturan Sales Funnel & Detail Produk</h4>
+
+                                <div className="form-group">
+                                    <label>Deskripsi Lengkap</label>
+                                    <textarea rows="4" value={form.longDescription} onChange={e => setForm({ ...form, longDescription: e.target.value })} placeholder="Deskripsi rinci di halaman penjelasan..." />
+                                </div>
+                                <div className="form-group"><label>Badge (opsional)</label><input value={form.badge} onChange={e => setForm({ ...form, badge: e.target.value })} placeholder="Contoh: New, Bestseller, Hot" /></div>
+
+                                <div className="form-group" style={{ marginTop: 'var(--space-4)' }}>
+                                    <label>Benefit / Apa yang didapat</label>
+                                    <div style={{ display: 'flex', gap: 8 }}>
+                                        <input value={newBenefit} onChange={e => setNewBenefit(e.target.value)} placeholder="Akses seumur hidup..." onKeyDown={e => e.key === 'Enter' && addBenefit()} style={{ flex: 1 }} />
+                                        <button type="button" className="btn-modal-save" style={{ padding: 'var(--space-2) var(--space-4)', fontSize: 'var(--text-sm)' }} onClick={addBenefit}>+</button>
+                                    </div>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 8 }}>
+                                        {form.benefits.map((b, i) => (
+                                            <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '6px 10px', background: 'var(--color-bg)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', fontSize: 'var(--text-sm)' }}>
+                                                <span>✓ {b}</span>
+                                                <button type="button" onClick={() => setForm(prev => ({ ...prev, benefits: prev.benefits.filter((_, idx) => idx !== i) }))} style={{ color: 'var(--color-error)' }}><X size={14} /></button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <div className="form-group" style={{ marginTop: 'var(--space-4)' }}>
+                                    <label>Silabus / Isi Materi</label>
+                                    <div style={{ display: 'flex', gap: 8 }}>
+                                        <input value={newMaterialTitle} onChange={e => setNewMaterialTitle(e.target.value)} placeholder="Judul bab" style={{ flex: 2 }} onKeyDown={e => e.key === 'Enter' && addMaterial()} />
+                                        <input value={newMaterialMeta} onChange={e => setNewMaterialMeta(e.target.value)} placeholder="Meta (ex: 15 video)" style={{ flex: 1 }} onKeyDown={e => e.key === 'Enter' && addMaterial()} />
+                                        <button type="button" className="btn-modal-save" style={{ padding: 'var(--space-2) var(--space-4)', fontSize: 'var(--text-sm)' }} onClick={addMaterial}>+</button>
+                                    </div>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 8 }}>
+                                        {form.materials.map((m, i) => (
+                                            <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '6px 10px', background: 'var(--color-bg)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', fontSize: 'var(--text-sm)' }}>
+                                                <div><span style={{ fontWeight: 600, marginRight: 8 }}>{String(i + 1).padStart(2, '0')}</span> {m.title} <span style={{ color: 'var(--color-text-muted)', fontSize: '11px', marginLeft: 8 }}>({m.duration || m.pages || m.videos})</span></div>
+                                                <button type="button" onClick={() => setForm(prev => ({ ...prev, materials: prev.materials.filter((_, idx) => idx !== i) }))} style={{ color: 'var(--color-error)' }}><X size={14} /></button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div className="modal-actions">
                             <button className="btn-modal-cancel" onClick={() => setModal(false)}>Batal</button>
