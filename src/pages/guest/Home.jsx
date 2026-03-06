@@ -127,7 +127,7 @@ export default function Home() {
             </section>
 
             {/* Packages Preview */}
-            <section className="section packages-preview">
+            {/* <section className="section packages-preview">
                 <div className="container">
                     <div className="section-header text-center">
                         <p className="section-label"><Zap size={14} /> Paket Bundling</p>
@@ -160,7 +160,7 @@ export default function Home() {
                         ))}
                     </div>
                 </div>
-            </section>
+            </section> */}
 
             {/* Features */}
             <section className="section">
