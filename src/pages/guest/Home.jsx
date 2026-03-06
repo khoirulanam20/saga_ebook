@@ -6,6 +6,7 @@ import { packages } from '../../data/packages';
 import ProductCard from '../../components/shared/ProductCard';
 import TestimonialCard from '../../components/shared/TestimonialCard';
 import { formatCurrency } from '../../utils/helpers';
+import { useContent } from '../../context/ContentContext';
 import './Home.css';
 
 const stats = [
@@ -23,6 +24,8 @@ const features = [
 
 export default function Home() {
     const featuredProducts = products.filter(p => p.featured).slice(0, 3);
+    const { content } = useContent();
+    const { home } = content;
 
     return (
         <div className="home">
@@ -32,22 +35,21 @@ export default function Home() {
                 <div className="container hero__content">
                     <div className="hero__badge badge badge-accent">
                         <Zap size={12} />
-                        Platform Digital Learning #1 Indonesia
+                        {home.heroBadge}
                     </div>
                     <h1 className="hero__title">
-                        Kuasai Skill Digital,<br />
-                        <span className="text-gradient">Akselerasi Karir Anda</span>
+                        {home.heroTitleLine1}<br />
+                        <span className="text-gradient">{home.heroTitleLine2}</span>
                     </h1>
                     <p className="hero__subtitle">
-                        Pelajari keterampilan digital terbaru dari para mentor berpengalaman.
-                        Ebook, Video Kelas, Webinar, dan Kelas Offline tersedia untuk membantu perjalanan sukses Anda.
+                        {home.heroSubtitle}
                     </p>
                     <div className="hero__actions">
                         <Link to="/products" className="btn-hero-primary">
-                            Jelajahi Produk <ArrowRight size={18} />
+                            {home.ctaPrimary} <ArrowRight size={18} />
                         </Link>
                         <Link to="/packages/growth-pack" className="btn-hero-secondary">
-                            Lihat Paket Bundling
+                            {home.ctaSecondary}
                         </Link>
                     </div>
                     <div className="hero__proof">

@@ -2,10 +2,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import { BookOpen, Video, Receipt, User, Download, ExternalLink } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { products } from '../../data/products';
+import { packages } from '../../data/packages';
 import { formatCurrency, getCategoryLabel } from '../../utils/helpers';
 import './UserDashboard.css';
-
-const purchasedProducts = products.slice(0, 3); // simulate purchased
 
 const transactions = [
     { id: 'TRX-001', date: '2025-01-15', products: 'Ebook Strategi Bisnis Digital', amount: 149000, status: 'Berhasil' },
@@ -16,6 +15,33 @@ const transactions = [
 export default function UserDashboard() {
     const { user } = useAuth();
     const navigate = useNavigate();
+
+    // Derive purchased products mapping from transactions
+    const purchasedProducts = [];
+    const addedIds = new Set();
+
+    transactions.forEach(t => {
+        if (t.status !== 'Berhasil') return;
+
+        // Check if it's a package
+        const pkg = packages.find(p => p.title === t.products);
+        if (pkg) {
+            pkg.productNames.forEach(name => {
+                const prod = products.find(p => p.title === name);
+                if (prod && !addedIds.has(prod.id)) {
+                    purchasedProducts.push(prod);
+                    addedIds.add(prod.id);
+                }
+            });
+        } else {
+            // Otherwise, it's a single product
+            const prod = products.find(p => p.title === t.products);
+            if (prod && !addedIds.has(prod.id)) {
+                purchasedProducts.push(prod);
+                addedIds.add(prod.id);
+            }
+        }
+    });
 
     return (
         <div className="user-dashboard">

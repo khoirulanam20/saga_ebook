@@ -1,9 +1,12 @@
 import { useState } from 'react';
 import { Mail, Phone, MapPin, MessageCircle, Send } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useContent } from '../../context/ContentContext';
 import './Contact.css';
 
 export default function Contact() {
+    const { content } = useContent();
+    const { contact } = content;
     const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' });
 
     const handleSubmit = (e) => {
@@ -17,8 +20,8 @@ export default function Contact() {
             <div className="contact-header">
                 <div className="container">
                     <p className="section-label">Hubungi Kami</p>
-                    <h1 className="contact-title">Ada Pertanyaan? <span className="text-gradient">Kami Siap Membantu</span></h1>
-                    <p className="contact-subtitle">Tim kami selalu siap membantu Anda 24/7. Jangan ragu untuk menghubungi kami.</p>
+                    <h1 className="contact-title">{contact.title}</h1>
+                    <p className="contact-subtitle">{contact.subtitle}</p>
                 </div>
             </div>
 
@@ -29,16 +32,16 @@ export default function Contact() {
                         <h2 className="info-title">Informasi Kontak</h2>
                         <div className="contact-cards">
                             {[
-                                { icon: Mail, label: 'Email', value: 'hello@sagaacademy.id', href: 'mailto:hello@sagaacademy.id' },
-                                { icon: Phone, label: 'WhatsApp', value: '+62 812-3456-7890', href: 'https://wa.me/628123456789' },
-                                { icon: MapPin, label: 'Alamat', value: 'Jl. Sudirman No. 123, Jakarta Selatan, DKI Jakarta 12190', href: null },
+                                { icon: Mail, label: 'Email', value: contact.email, href: `mailto:${contact.email}` },
+                                { icon: Phone, label: 'Telepon / WhatsApp', value: contact.phone, href: `https://wa.me/${contact.phone.replace(/[^0-9]/g, '')}` },
+                                { icon: MapPin, label: 'Alamat', value: contact.address, href: null },
                             ].map(({ icon: Icon, label, value, href }) => (
                                 <div key={label} className="contact-info-card">
                                     <div className="contact-icon"><Icon size={20} /></div>
                                     <div>
                                         <p className="contact-label">{label}</p>
                                         {href ? (
-                                            <a href={href} className="contact-value-link">{value}</a>
+                                            <a href={href} className="contact-value-link" target="_blank" rel="noreferrer">{value}</a>
                                         ) : (
                                             <p className="contact-value">{value}</p>
                                         )}
@@ -47,19 +50,10 @@ export default function Contact() {
                             ))}
                         </div>
 
-                        <a href="https://wa.me/628123456789" className="whatsapp-btn" target="_blank" rel="noreferrer">
+                        <a href={`https://wa.me/${contact.phone.replace(/[^0-9]/g, '')}`} className="whatsapp-btn" target="_blank" rel="noreferrer">
                             <MessageCircle size={20} />
                             Chat di WhatsApp Sekarang
                         </a>
-
-                        {/* Map placeholder */}
-                        <div className="map-placeholder">
-                            <div className="map-content">
-                                <MapPin size={40} />
-                                <p>Jakarta Selatan, Indonesia</p>
-                                <a href="https://maps.google.com" target="_blank" rel="noreferrer" className="map-link">Buka di Google Maps →</a>
-                            </div>
-                        </div>
                     </div>
 
                     {/* Form */}
@@ -83,10 +77,10 @@ export default function Contact() {
                             <div className="form-group">
                                 <label>Pesan</label>
                                 <textarea className="form-input form-textarea" rows={5} placeholder="Tuliskan pesan Anda di sini..." value={form.message} onChange={e => setForm({ ...form, message: e.target.value })} required />
+                                <button type="submit" className="btn-hero-primary" style={{ alignSelf: 'flex-start', marginTop: 'var(--space-4)' }}>
+                                    <Send size={17} /> Kirim Pesan
+                                </button>
                             </div>
-                            <button type="submit" className="btn-hero-primary" style={{ alignSelf: 'flex-start' }}>
-                                <Send size={17} /> Kirim Pesan
-                            </button>
                         </form>
                     </div>
                 </div>

@@ -293,8 +293,6 @@
     flex-shrink: 0;
 }
 
-.admin-stat-body {}
-
 .admin-stat-label {
     font-size: var(--text-xs);
     color: var(--color-text-muted);
@@ -622,4 +620,271 @@
     font-weight: var(--font-semibold);
     background: var(--gradient-accent);
     color: white;
+}
+
+/* ── CMS Builder (Hostinger-like) ── */
+.admin-cms-layout {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    position: fixed;
+    top: 0;
+    left: var(--sidebar-width);
+    right: 0;
+    background: #000;
+    transition: left 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.admin-layout.sidebar-collapsed .admin-cms-layout {
+    left: 80px;
+}
+
+.cms-sidebar {
+    width: 380px;
+    background: var(--color-bg-secondary);
+    border-right: 1px solid var(--color-border);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    z-index: 10;
+    flex-shrink: 0;
+    box-shadow: 5px 0 40px rgba(0, 0, 0, 0.3);
+    transition: margin-left 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cms-sidebar.collapsed {
+    margin-left: -380px;
+    transform: translateX(-100%);
+}
+
+/* Custom Scrollbar for CMS */
+.cms-sidebar ::-webkit-scrollbar,
+.cms-preview-frame::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+.cms-sidebar ::-webkit-scrollbar-track,
+.cms-preview-frame::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.cms-sidebar ::-webkit-scrollbar-thumb,
+.cms-preview-frame::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-full);
+}
+
+.cms-sidebar ::-webkit-scrollbar-thumb:hover,
+.cms-preview-frame::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.cms-sidebar-header {
+    padding: var(--space-5);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.cms-sidebar-header h2 {
+    font-size: var(--text-lg);
+    font-weight: var(--font-bold);
+}
+
+.cms-sidebar-header p {
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+}
+
+.cms-tabs {
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-3);
+    gap: 2px;
+}
+
+.cms-tab-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3);
+    border-radius: var(--radius-md);
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    font-weight: var(--font-medium);
+    text-align: left;
+    transition: all var(--transition-fast);
+}
+
+.cms-tab-btn:hover {
+    background: var(--color-bg-card-hover);
+    color: var(--color-text-primary);
+}
+
+.cms-tab-btn.active {
+    background: var(--color-accent-dim);
+    color: var(--color-accent-light);
+    border: 1px solid rgba(220, 38, 38, 0.2);
+}
+
+.cms-editor-fields {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--space-5);
+    border-top: 1px solid var(--color-border);
+}
+
+.cms-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.cms-form-group label {
+    font-size: var(--text-xs);
+    font-weight: var(--font-semibold);
+    color: var(--color-text-muted);
+    margin-top: var(--space-3);
+}
+
+.cms-form-group input,
+.cms-form-group textarea {
+    padding: var(--space-3) var(--space-4);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    color: var(--color-text-primary);
+    font-size: var(--text-sm);
+    outline: none;
+    font-family: inherit;
+    transition: all var(--transition-fast);
+}
+
+.cms-form-group input:focus,
+.cms-form-group textarea:focus {
+    border-color: var(--color-accent);
+    background: rgba(255, 255, 255, 0.06);
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
+    /* transparent red emphasis */
+}
+
+.cms-form-group textarea {
+    resize: vertical;
+}
+
+.cms-section-label {
+    text-transform: uppercase;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--color-text-muted);
+    font-weight: 700;
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 6px;
+    margin-bottom: var(--space-2);
+}
+
+.cms-sidebar-footer {
+    padding: var(--space-5);
+    border-top: 1px solid var(--color-border);
+    background: var(--color-bg-secondary);
+}
+
+.cms-preview-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: #0f0f1a;
+    padding: var(--space-8);
+    overflow: hidden;
+    position: relative;
+    background-image:
+        radial-gradient(circle at top right, rgba(220, 38, 38, 0.05), transparent 60%),
+        radial-gradient(circle at bottom left, rgba(124, 58, 237, 0.05), transparent 60%);
+    transition: padding 0.4s ease;
+}
+
+.cms-preview-wrapper {
+    margin: 0 auto;
+    width: 100%;
+    max-width: 1200px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.cms-preview-header {
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    padding: var(--space-3) var(--space-4);
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    z-index: 2;
+}
+
+.cms-toggle-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-muted);
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    width: 28px;
+    height: 28px;
+    transition: all var(--transition-fast);
+    margin-left: var(--space-2);
+}
+
+.cms-toggle-btn:hover {
+    color: var(--color-text-primary);
+    background: var(--color-bg-card-hover);
+    border-color: var(--color-accent);
+}
+
+.cms-url-bar {
+    flex: 1;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 6px 12px;
+    font-family: monospace;
+    font-size: 12px;
+    color: var(--color-text-muted);
+    text-align: center;
+}
+
+.cms-preview-badge {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--color-accent-light);
+    background: var(--color-accent-dim);
+    padding: 4px 8px;
+    border-radius: var(--radius-full);
+}
+
+.cms-preview-frame {
+    flex: 1;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-top: none;
+    border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: relative;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+}
+
+.cms-preview-content {
+    /* Mencegah interaksi navigasi di preview agar tetap di admin page */
+    pointer-events: none;
+    width: 1280px;
+    /* Force desktop width so layout doesn't clip */
+    margin: 0 auto;
+    /* Center it */
+    zoom: 0.65;
+    /* Scale down to fit inside the admin preview area */
+    background: var(--color-bg);
 }

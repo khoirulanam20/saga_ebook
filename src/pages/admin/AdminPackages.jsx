@@ -147,8 +147,13 @@ export default function AdminPackages() {
                             <div className="form-group">
                                 <label>Produk yang Termasuk</label>
                                 <div style={{ display: 'flex', gap: 8 }}>
-                                    <input value={newProduct} onChange={e => setNewProduct(e.target.value)} placeholder="Nama produk" onKeyDown={e => e.key === 'Enter' && addProduct()} style={{ flex: 1 }} />
-                                    <button type="button" className="btn-modal-save" style={{ padding: 'var(--space-2) var(--space-4)', fontSize: 'var(--text-sm)' }} onClick={addProduct}>+ Tambah</button>
+                                    <select value={newProduct} onChange={e => setNewProduct(e.target.value)} style={{ flex: 1, padding: 'var(--space-2)' }}>
+                                        <option value="">Pilih produk...</option>
+                                        {products.map(p => (
+                                            <option key={p.id} value={p.title}>{p.title}</option>
+                                        ))}
+                                    </select>
+                                    <button type="button" className="btn-modal-save" style={{ padding: 'var(--space-2) var(--space-4)', fontSize: 'var(--text-sm)', opacity: newProduct ? 1 : 0.5 }} onClick={addProduct} disabled={!newProduct}>+ Tambah</button>
                                 </div>
                                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 8 }}>
                                     {form.productNames.map((name, i) => (

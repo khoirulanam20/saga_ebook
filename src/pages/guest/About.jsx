@@ -1,4 +1,5 @@
 import { Users, Target, Eye, Award, Star } from 'lucide-react';
+import { useContent } from '../../context/ContentContext';
 import './About.css';
 
 const team = [
@@ -16,14 +17,17 @@ const achievements = [
 ];
 
 export default function About() {
+    const { content } = useContent();
+    const { about } = content;
+
     return (
         <div className="about-page">
             <div className="about-hero">
                 <div className="about-hero__glow" />
                 <div className="container about-hero__content">
                     <p className="section-label">Tentang Kami</p>
-                    <h1 className="about-title">Misi Kami: <span className="text-gradient">Demokratisasi Pendidikan Digital</span></h1>
-                    <p className="about-desc">SAGA Academy lahir dari keyakinan bahwa setiap orang berhak mendapatkan akses ke pendidikan berkualitas tinggi untuk mengembangkan skill digital mereka.</p>
+                    <h1 className="about-title">Misi Kami: <span className="text-gradient">{about.heroTitle}</span></h1>
+                    <p className="about-desc">{about.heroDesc}</p>
                 </div>
             </div>
 
@@ -31,9 +35,9 @@ export default function About() {
                 {/* Story */}
                 <section className="about-section story-section">
                     <div className="story-text">
-                        <h2 className="about-section-title">Cerita SAGA Academy</h2>
-                        <p>Berdiri pada tahun 2021, SAGA Academy dimulai dari sebuah visi sederhana: membantu masyarakat Indonesia untuk bisa bersaing di era digital global. Nama SAGA sendiri merupakan singkatan dari <em>Skill, Action, Growth, Achievement</em>.</p>
-                        <p>Kami percaya bahwa transformasi karir dimulai dari satu langkah kecil — mengambil ilmu dari mereka yang telah sukses dan menerapkannya dalam kehidupan nyata. Itulah mengapa setiap produk yang kami hadirkan dirancang untuk memberikan dampak nyata, bukan sekadar teori.</p>
+                        <h2 className="about-section-title">{about.storyTitle}</h2>
+                        <p>{about.storyP1}</p>
+                        <p>{about.storyP2}</p>
                     </div>
                     <div className="story-visual">
                         <div className="story-card">

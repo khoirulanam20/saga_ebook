@@ -1,7 +1,7 @@
 import { NavLink, Link, useNavigate } from 'react-router-dom';
 import {
     LayoutDashboard, Package, BoxSelect, Receipt, Users,
-    MessageSquare, FileEdit, CreditCard, Bot, LogOut, ChevronRight
+    MessageSquare, FileEdit, CreditCard, Bot, LogOut, ChevronRight, Menu
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import './AdminSidebar.css';
@@ -18,7 +18,7 @@ const menuItems = [
     { to: '/admin/chatbot', icon: Bot, label: 'Chatbot AI' },
 ];
 
-export default function AdminSidebar() {
+export default function AdminSidebar({ isCollapsed, toggleSidebar }) {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
 
@@ -28,26 +28,30 @@ export default function AdminSidebar() {
     };
 
     return (
-        <aside className="admin-sidebar">
+        <aside className={`admin-sidebar ${isCollapsed ? 'collapsed' : ''}`}>
             <div className="admin-sidebar__header">
                 <Link to="/" className="admin-sidebar__brand">
                     <span className="brand-logo">SAGA</span>
-                    <span className="brand-sub">Admin</span>
+                    {!isCollapsed && <span className="brand-sub">Admin</span>}
                 </Link>
+                <button className="admin-sidebar__toggle" onClick={toggleSidebar}>
+                    <Menu size={20} />
+                </button>
             </div>
 
             <nav className="admin-sidebar__nav">
-                <p className="admin-sidebar__section-label">Menu Utama</p>
+                {!isCollapsed && <p className="admin-sidebar__section-label">Menu Utama</p>}
                 {menuItems.map(({ to, icon: Icon, label, end }) => (
                     <NavLink
                         key={to}
                         to={to}
                         end={end}
                         className={({ isActive }) => `admin-sidebar__link ${isActive ? 'active' : ''}`}
+                        title={isCollapsed ? label : undefined}
                     >
                         <Icon size={18} />
-                        <span>{label}</span>
-                        <ChevronRight size={14} className="chevron" />
+                        {!isCollapsed && <span>{label}</span>}
+                        {!isCollapsed && <ChevronRight size={14} className="chevron" />}
                     </NavLink>
                 ))}
             </nav>
@@ -55,14 +59,18 @@ export default function AdminSidebar() {
             <div className="admin-sidebar__footer">
                 <div className="admin-sidebar__user">
                     <div className="user-avatar">{user?.name?.[0] || 'A'}</div>
-                    <div className="user-info">
-                        <p className="user-name">{user?.name || 'Admin'}</p>
-                        <p className="user-role">Administrator</p>
-                    </div>
+                    {!isCollapsed && (
+                        <div className="user-info">
+                            <p className="user-name">{user?.name || 'Admin'}</p>
+                            <p className="user-role">Administrator</p>
+                        </div>
+                    )}
                 </div>
-                <button className="admin-sidebar__logout" onClick={handleLogout}>
-                    <LogOut size={16} />
-                </button>
+                {!isCollapsed && (
+                    <button className="admin-sidebar__logout" onClick={handleLogout} title="Keluar">
+                        <LogOut size={16} />
+                    </button>
+                )}
             </div>
         </aside>
     );
