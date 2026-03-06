@@ -241,14 +241,14 @@ export default function AdminTransactions() {
                                     </button>
                                 </div>
                             </div>
-                            <div style={{ display: 'flex', gap: 'var(--space-3)', justifyContent: 'flex-end', marginTop: 'var(--space-2)' }}>
+                            {/* <div style={{ display: 'flex', gap: 'var(--space-3)', justifyContent: 'flex-end', marginTop: 'var(--space-2)' }}>
                                 {selectedTrx.status === 'Berhasil' && (
                                     <button className="btn-modal-save" style={{ flex: 1, margin: 0 }} onClick={() => toast.success('Email konfirmasi dikirim!')}>
                                         📧 Kirim Ulang Email Akses
                                     </button>
                                 )}
                                 <button className="btn-modal-cancel" style={{ flex: selectedTrx.status === 'Berhasil' ? 0 : 1 }} onClick={() => setSelectedTrx(null)}>Tutup</button>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 </div>
