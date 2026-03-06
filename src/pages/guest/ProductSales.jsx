@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Check, Star, ArrowRight, ArrowLeft, ShoppingCart, Play, BookOpen, Users, Zap, ChevronDown, ChevronUp } from 'lucide-react';
+import { Check, Star, ArrowRight, ArrowLeft, ShoppingCart, Play, BookOpen, Users, Zap, ChevronDown, ChevronUp, ShieldCheck, Clock } from 'lucide-react';
 import { products } from '../../data/products';
 import { testimonials } from '../../data/testimonials';
 import { formatCurrency, getCategoryLabel } from '../../utils/helpers';
@@ -76,9 +76,9 @@ export default function ProductSales() {
 
                                 <div className="intro-stats">
                                     {[
-                                        { icon: Users, value: '5.200+', label: 'Pelajar Bergabung' },
-                                        { icon: Star, value: '4.9/5', label: 'Rating Rata-rata' },
-                                        { icon: Zap, value: '98%', label: 'Kepuasan Peserta' },
+                                        { icon: ShieldCheck, value: 'Akses Selamanya', label: 'Lifetime Access' },
+                                        // { icon: Star, value: '4.9/5', label: 'Rating Rata-rata' },
+                                        { icon: Clock, value: '24/7', label: 'Dukungan Teknis' },
                                     ].map(({ icon: Icon, value, label }) => (
                                         <div key={label} className="intro-stat">
                                             <div className="intro-stat__icon"><Icon size={20} /></div>
@@ -123,12 +123,14 @@ export default function ProductSales() {
                                 <span className="cat-pill">{getCategoryLabel(product.category)}</span>
                                 <h2>{product.title}</h2>
                                 <p className="showcase-desc">{product.description}</p>
-                                <div className="showcase-rating">
-                                    {Array.from({ length: 5 }).map((_, i) => (
-                                        <Star key={i} size={16} fill={i < Math.floor(product.rating) ? 'currentColor' : 'none'} />
-                                    ))}
-                                    <span>{product.rating} ({product.totalRatings} ulasan)</span>
-                                </div>
+                                {/* <div className="showcase-rating">
+                                        <div className="rating-stars">
+                                            {Array.from({ length: 5 }).map((_, i) => (
+                                                <Star key={i} size={16} fill={i < Math.floor(product.rating) ? 'currentColor' : 'none'} />
+                                            ))}
+                                        </div>
+                                        <span>{product.rating} ({product.totalRatings} ulasan)</span>
+                                    </div> */}
                                 <div className="showcase-price">
                                     <span className="price-main">{formatCurrency(product.price)}</span>
                                     {product.originalPrice > product.price && (

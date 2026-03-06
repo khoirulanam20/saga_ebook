@@ -11,9 +11,9 @@ const categories = [{ id: 'all', label: 'Semua' }, ...categoriesData];
 const sortOptions = [
     { value: 'default', label: 'Default' },
     { value: 'price-asc', label: 'Harga: Rendah ke Tinggi' },
-    { value: 'price-desc', label: 'Harga: Tinggi ke Rendah' },
-    { value: 'rating', label: 'Rating Tertinggi' },
+    { value: 'newest', label: 'Terbaru' },
     { value: 'popular', label: 'Terpopuler' },
+    { value: 'price_low', label: 'Harga Terendah' },
 ];
 
 export default function Products() {
@@ -28,9 +28,9 @@ export default function Products() {
         .filter(p => !search || p.title.toLowerCase().includes(search.toLowerCase()) || p.description.toLowerCase().includes(search.toLowerCase()))
         .sort((a, b) => {
             if (sort === 'price-asc') return a.price - b.price;
-            if (sort === 'price-desc') return b.price - a.price;
-            if (sort === 'rating') return b.rating - a.rating;
+            if (sort === 'newest') return new Date(b.date) - new Date(a.date);
             if (sort === 'popular') return b.sold - a.sold;
+            if (sort === 'price_low') return a.price - b.price;
             return 0;
         });
 

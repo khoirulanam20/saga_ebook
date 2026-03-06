@@ -53,6 +53,7 @@ export default function ProductCard({ product }) {
                 <h3 className="product-card__title">{product.title}</h3>
                 <p className="product-card__desc">{product.description}</p>
 
+                {/*
                 <div className="product-card__rating">
                     <Star size={13} fill="currentColor" />
                     <span>{product.rating}</span>
@@ -60,6 +61,7 @@ export default function ProductCard({ product }) {
                     <span className="dot">·</span>
                     <span className="sold-count">{product.sold.toLocaleString('id-ID')} terjual</span>
                 </div>
+                */}
 
                 <div className="product-card__footer">
                     <div className="product-card__price">

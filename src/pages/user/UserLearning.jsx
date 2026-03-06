@@ -102,12 +102,12 @@ export default function UserLearning() {
                             </div>
                             <h1 className="detail-card__title">{product.title}</h1>
 
-                            <div className="detail-card__rating">
+                            {/* <div className="detail-card__rating">
                                 {Array.from({ length: 5 }).map((_, i) => (
                                     <Star key={i} size={16} fill={i < Math.floor(product.rating || 5) ? 'currentColor' : 'none'} />
                                 ))}
                                 <span className="rating-num">{product.rating || 5.0}</span>
-                            </div>
+                            </div> */}
 
                             <div className="detail-card__price" style={{ marginTop: 'var(--space-4)', marginBottom: 'var(--space-4)' }}>
                                 <span className="price-big" style={{ fontSize: 'var(--text-xl)', color: 'var(--color-success)' }}>

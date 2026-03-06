@@ -106,13 +106,15 @@ export default function ProductDetail() {
                             </div>
                             <h1 className="detail-card__title">{product.title}</h1>
 
-                            <div className="detail-card__rating">
-                                {Array.from({ length: 5 }).map((_, i) => (
-                                    <Star key={i} size={16} fill={i < Math.floor(product.rating) ? 'currentColor' : 'none'} />
-                                ))}
+                            {/* <div className="detail-card__rating">
+                                <div className="rating-stars">
+                                    {Array.from({ length: 5 }).map((_, i) => (
+                                        <Star key={i} size={16} fill={i < Math.floor(product.rating) ? 'currentColor' : 'none'} />
+                                    ))}
+                                </div>
                                 <span className="rating-num">{product.rating}</span>
                                 <span className="rating-total">({product.totalRatings} ulasan)</span>
-                            </div>
+                            </div> */}
 
                             <div className="detail-card__price">
                                 <span className="price-big">{formatCurrency(product.price)}</span>

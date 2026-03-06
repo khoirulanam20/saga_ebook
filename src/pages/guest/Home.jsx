@@ -12,9 +12,9 @@ import './Home.css';
 
 const stats = [
     { icon: Users, value: '5,200+', label: 'Pelajar Aktif' },
-    { icon: BookOpen, value: '50+', label: 'Produk Digital' },
-    { icon: Star, value: '4.9', label: 'Rating Rata-rata' },
-    { icon: Award, value: '98%', label: 'Kepuasan Pelanggan' },
+    { icon: Users, value: '10.000+', label: 'Alumni Sukses' },
+    // { icon: Star, value: '4.9', label: 'Rating Rata-rata' },
+    { icon: BookOpen, value: '50+', label: 'Program Tersedia' },
 ];
 
 const features = [
@@ -49,9 +49,9 @@ export default function Home() {
                         <Link to="/products" className="btn-hero-primary">
                             {home.ctaPrimary} <ArrowRight size={18} />
                         </Link>
-                        <Link to="/packages/growth-pack" className="btn-hero-secondary">
+                        {/* <Link to="/packages/growth-pack" className="btn-hero-secondary">
                             {home.ctaSecondary}
-                        </Link>
+                        </Link> */}
                     </div>
                     <div className="hero__proof">
                         <div className="proof-avatars">
@@ -113,7 +113,7 @@ export default function Home() {
                 <div className="container">
                     <div className="section-header-row">
                         <div>
-                            <p className="section-label"><Star size={14} /> Produk Unggulan</p>
+                            <p className="section-label"><Zap size={14} /> Produk Unggulan</p>
                             <h2 className="section-title">Pilihan <span className="text-gradient">Terbaik</span></h2>
                         </div>
                         <Link to="/products" className="see-all-link">Lihat Semua <ArrowRight size={16} /></Link>

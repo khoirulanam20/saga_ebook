@@ -1,4 +1,4 @@
-import { Users, Target, Eye, Award, Star } from 'lucide-react';
+import { Users, Target, Eye, Award, Star, BookOpen } from 'lucide-react';
 import { useContent } from '../../context/ContentContext';
 import './About.css';
 
@@ -10,9 +10,9 @@ const team = [
 ];
 
 const achievements = [
-    { icon: Users, value: '5,200+', label: 'Pelajar Aktif' },
-    { icon: Star, value: '4.9/5', label: 'Rating Platform' },
-    { icon: Award, value: '50+', label: 'Produk Tersedia' },
+    { icon: Users, value: '10.000+', label: 'Alumni Sukses' },
+    // { icon: Star, value: '4.9/5', label: 'Rating Platform' },
+    { icon: BookOpen, value: '50+', label: 'Produk Digital' },
     { icon: Target, value: '98%', label: 'Tingkat Kepuasan' },
 ];
 

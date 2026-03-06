@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Search, Eye, Download, X, User, Package, CreditCard, Calendar, CheckCircle2, XCircle, Clock } from 'lucide-react';
+import { Search, Eye, Download, X, User, Package, CreditCard, Calendar, CheckCircle2, XCircle, Clock, Building2 } from 'lucide-react';
+import toast from 'react-hot-toast';
 import { formatCurrency } from '../../utils/helpers';
 import './Admin.css';
 
@@ -23,6 +24,13 @@ export default function AdminTransactions() {
     const [search, setSearch] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
     const [selectedTrx, setSelectedTrx] = useState(null);
+    const [editStatus, setEditStatus] = useState('');
+
+    // Update editStatus when modal opens
+    const handleOpenDetail = (trx) => {
+        setSelectedTrx(trx);
+        setEditStatus(trx.status);
+    };
 
 
     const filtered = transactions.filter(t =>
@@ -117,7 +125,7 @@ export default function AdminTransactions() {
                                         </td>
                                         <td className="text-muted">{t.date}</td>
                                         <td>
-                                            <button className="btn-show" onClick={() => setSelectedTrx(t)} title="Lihat Detail">
+                                            <button className="btn-show" onClick={() => handleOpenDetail(t)} title="Lihat Detail">
                                                 <Eye size={14} /> Show
                                             </button>
                                         </td>
@@ -172,8 +180,11 @@ export default function AdminTransactions() {
                             <div className="detail-section-block">
                                 <div className="detail-section-label"><CreditCard size={14} /> Informasi Pembayaran</div>
                                 <div className="detail-grid">
-                                    <div><span>Metode Transfer</span><strong style={{ textTransform: 'uppercase' }}>{selectedTrx.method}</strong></div>
+                                    <div><span>Transfer Ke</span><strong style={{ display: 'flex', alignItems: 'center', gap: 6 }}><Building2 size={14} /> {selectedTrx.method} (PT SAGA Academy)</strong></div>
                                     <div><span>Total Bayar</span><strong style={{ color: 'var(--color-accent-light)', fontSize: 'var(--text-lg)' }}>{formatCurrency(selectedTrx.amount)}</strong></div>
+                                    <div style={{ gridColumn: '1 / -1', marginTop: 8, padding: 'var(--space-2) var(--space-3)', background: 'var(--color-bg)', borderRadius: 'var(--radius-sm)', border: '1px dashed var(--color-border)' }}>
+                                        <p style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)' }}>Status Verifikasi: <strong style={{ color: cfg.color }}>{selectedTrx.status}</strong></p>
+                                    </div>
                                 </div>
                             </div>
 
@@ -195,23 +206,49 @@ export default function AdminTransactions() {
                             )}
                         </div>
 
-                        <div className="modal-actions">
-                            {selectedTrx.status === 'Pending' && (
-                                <>
-                                    <button className="btn-modal-cancel" style={{ color: 'var(--color-error)' }} onClick={() => handleVerify(selectedTrx.id, 'Gagal')}>
-                                        ✕ Tolak
+                        <div className="modal-actions" style={{ flexDirection: 'column', gap: 'var(--space-4)', alignItems: 'stretch' }}>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
+                                <label style={{ fontSize: 'var(--text-xs)', fontWeight: 600, color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                                    Ubah Status Transaksi
+                                </label>
+                                <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
+                                    <select
+                                        value={editStatus}
+                                        onChange={(e) => setEditStatus(e.target.value)}
+                                        style={{
+                                            flex: 1,
+                                            padding: 'var(--space-3) var(--space-4)',
+                                            background: 'var(--color-bg)',
+                                            border: '1px solid var(--color-border)',
+                                            borderRadius: 'var(--radius-lg)',
+                                            color: 'var(--color-text)',
+                                            fontSize: 'var(--text-sm)',
+                                            outline: 'none',
+                                            cursor: 'pointer'
+                                        }}
+                                    >
+                                        <option value="Pending">🕒 Pending (Menunggu Verifikasi)</option>
+                                        <option value="Berhasil">✅ Berhasil (Terverifikasi)</option>
+                                        <option value="Gagal">❌ Gagal (Ditolak)</option>
+                                    </select>
+                                    <button
+                                        className="btn-modal-save"
+                                        style={{ margin: 0, padding: '0 var(--space-6)' }}
+                                        onClick={() => handleVerify(selectedTrx.id, editStatus)}
+                                        disabled={editStatus === selectedTrx.status}
+                                    >
+                                        Simpan Perubahan
                                     </button>
-                                    <button className="btn-modal-save" style={{ background: 'var(--color-success)' }} onClick={() => handleVerify(selectedTrx.id, 'Berhasil')}>
-                                        ✓ Verifikasi (Terima)
+                                </div>
+                            </div>
+                            <div style={{ display: 'flex', gap: 'var(--space-3)', justifyContent: 'flex-end', marginTop: 'var(--space-2)' }}>
+                                {selectedTrx.status === 'Berhasil' && (
+                                    <button className="btn-modal-save" style={{ flex: 1, margin: 0 }} onClick={() => toast.success('Email konfirmasi dikirim!')}>
+                                        📧 Kirim Ulang Email Akses
                                     </button>
-                                </>
-                            )}
-                            {selectedTrx.status === 'Berhasil' && (
-                                <button className="btn-modal-save" onClick={() => toast.success('Email konfirmasi dikirim!')}>
-                                    📧 Kirim Ulang Email Akses
-                                </button>
-                            )}
-                            <button className="btn-modal-cancel" onClick={() => setSelectedTrx(null)}>Tutup</button>
+                                )}
+                                <button className="btn-modal-cancel" style={{ flex: selectedTrx.status === 'Berhasil' ? 0 : 1 }} onClick={() => setSelectedTrx(null)}>Tutup</button>
+                            </div>
                         </div>
                     </div>
                 </div>

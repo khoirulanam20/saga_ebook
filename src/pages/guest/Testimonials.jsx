@@ -26,7 +26,7 @@ export default function Testimonials() {
 
             <div className="container testi-main">
                 {/* Summary */}
-                <div className="rating-summary">
+                {/* <div className="rating-summary">
                     <div className="rating-overall">
                         <span className="rating-big">{overallRating}</span>
                         <div className="rating-stars">{Array.from({ length: 5 }).map((_, i) => <Star key={i} size={24} fill="currentColor" />)}</div>
@@ -34,16 +34,14 @@ export default function Testimonials() {
                     </div>
                     <div className="rating-breakdown">
                         {ratingBreakdown.map(r => (
-                            <div key={r.stars} className="breakdown-row">
-                                <span className="breakdown-stars">{r.stars} ⭐</span>
-                                <div className="breakdown-bar">
-                                    <div className="breakdown-fill" style={{ width: `${(r.count / total) * 100}%` }} />
-                                </div>
-                                <span className="breakdown-count">{r.count}</span>
+                            <div key={r.stars} className="rating-row">
+                                <span className="stars-num">{r.stars} <Star size={12} fill="currentColor" /></span>
+                                <div className="rating-bar-wrap"><div className="rating-bar-fill" style={{ width: `${(r.count / total) * 100}%` }} /></div>
+                                <span className="rating-count">{r.count}</span>
                             </div>
                         ))}
                     </div>
-                </div>
+                </div> */}
 
                 {/* Grid */}
                 <div className="testi-grid">

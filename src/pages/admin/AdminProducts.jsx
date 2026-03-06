@@ -43,7 +43,7 @@ export default function AdminProducts() {
                 <div className="admin-table-wrap">
                     <table className="admin-table">
                         <thead>
-                            <tr><th>Produk</th><th>Kategori</th><th>Harga</th><th>Terjual</th><th>Rating</th><th>Aksi</th></tr>
+                            <tr><th>Produk</th><th>Kategori</th><th>Harga</th><th>Terjual</th>{/* <th>Rating</th> */}<th>Aksi</th></tr>
                         </thead>
                         <tbody>
                             {filtered.map(p => (
@@ -59,7 +59,7 @@ export default function AdminProducts() {
                                     <td><span className="badge-cat">{getCategoryLabel(p.category)}</span></td>
                                     <td>{formatCurrency(p.price)}</td>
                                     <td>{p.sold}</td>
-                                    <td>⭐ {p.rating}</td>
+                                    {/* <td>⭐ {p.rating}</td> */}
                                     <td>
                                         <div className="actions-col">
                                             <button className="btn-icon edit" onClick={() => openEdit(p)} title="Edit"><Pencil size={15} /></button>
