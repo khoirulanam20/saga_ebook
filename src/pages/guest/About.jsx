@@ -93,7 +93,7 @@ export default function About() {
                 </section>
 
                 {/* Team */}
-                <section className="about-section">
+                {/* <section className="about-section">
                     <h2 className="about-section-title">Tim Kami</h2>
                     <div className="team-grid">
                         {team.map(member => (
@@ -105,7 +105,7 @@ export default function About() {
                             </div>
                         ))}
                     </div>
-                </section>
+                </section> */}
             </div>
         </div>
     );
