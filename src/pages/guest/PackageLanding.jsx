@@ -120,13 +120,6 @@ export default function PackageLanding() {
                     </div>
                 </section>
 
-                {/* Testimonials */}
-                <section className="pkg-section">
-                    <h2 className="pkg-section-title">Apa Kata Mereka</h2>
-                    <div className="grid-3">
-                        {testimonials.slice(0, 3).map(t => <TestimonialCard key={t.id} testimonial={t} />)}
-                    </div>
-                </section>
 
                 {/* CTA */}
                 <section className="pkg-cta">

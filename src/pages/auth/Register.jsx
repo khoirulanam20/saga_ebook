@@ -60,6 +60,9 @@ export default function Register() {
                 <p className="auth-footer">
                     Sudah punya akun? <Link to="/login">Masuk</Link>
                 </p>
+                <p className="auth-footer">
+                    Kembali ke halaman utama? <Link to="/">Kembali</Link>
+                </p>
             </div>
         </div>
     );

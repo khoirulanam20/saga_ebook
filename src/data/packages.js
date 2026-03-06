@@ -10,7 +10,7 @@ export const packages = [
         popular: false,
         color: '#3b82f6',
         products: [1, 5], // product IDs
-        productNames: ['Ebook Strategi Bisnis Digital', 'Ebook SEO Mastery Guide'],
+        productNames: ['Ebook: Strategi Bisnis Digital 2024', 'Ebook: SEO Mastery Guide'],
         benefits: [
             '2 Ebook premium senilai Rp697.000',
             'Akses lifetime ke semua materi',
@@ -31,10 +31,10 @@ export const packages = [
         color: '#7c3aed',
         products: [1, 2, 5, 6],
         productNames: [
-            'Ebook Strategi Bisnis Digital',
-            'Video Kelas Instagram Marketing',
-            'Ebook SEO Mastery Guide',
-            'Video Kelas Copywriting',
+            'Ebook: Strategi Bisnis Digital 2024',
+            'Video Kelas: Instagram Marketing Mastery',
+            'Ebook: SEO Mastery Guide',
+            'Video Kelas: Copywriting yang Menjual',
         ],
         benefits: [
             '4 produk premium senilai Rp1.496.000',
@@ -58,12 +58,12 @@ export const packages = [
         color: '#f59e0b',
         products: [1, 2, 3, 4, 5, 6],
         productNames: [
-            'Ebook Strategi Bisnis Digital',
-            'Video Kelas Instagram Marketing',
-            'Webinar Financial Planning',
-            'Bootcamp Digital Marketing Offline',
-            'Ebook SEO Mastery Guide',
-            'Video Kelas Copywriting',
+            'Ebook: Strategi Bisnis Digital 2024',
+            'Video Kelas: Instagram Marketing Mastery',
+            'Webinar: Financial Planning untuk Freelancer',
+            'Kelas Offline: Digital Marketing Bootcamp',
+            'Ebook: SEO Mastery Guide',
+            'Video Kelas: Copywriting yang Menjual',
         ],
         benefits: [
             'Semua 6 produk senilai Rp3.845.000',

@@ -9,10 +9,10 @@ import './AdminSidebar.css';
 const menuItems = [
     { to: '/admin', icon: LayoutDashboard, label: 'Dashboard', end: true },
     { to: '/admin/products', icon: Package, label: 'Produk' },
-    { to: '/admin/packages', icon: BoxSelect, label: 'Paket' },
+    { to: '/admin/categories', icon: BoxSelect, label: 'Kategori' },
     { to: '/admin/transactions', icon: Receipt, label: 'Transaksi' },
     { to: '/admin/users', icon: Users, label: 'Pengguna' },
-    { to: '/admin/testimonials', icon: MessageSquare, label: 'Testimoni' },
+    { to: '/admin/testimonials', icon: MessageSquare, label: 'Testimoni (Soon)' },
     { to: '/admin/content', icon: FileEdit, label: 'Konten' },
     { to: '/admin/payment', icon: CreditCard, label: 'Pembayaran' },
     { to: '/admin/chatbot', icon: Bot, label: 'Chatbot AI' },

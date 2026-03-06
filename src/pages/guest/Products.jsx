@@ -1,9 +1,12 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Search, Filter, SlidersHorizontal } from 'lucide-react';
-import { products, categories } from '../../data/products';
+import { products } from '../../data/products';
+import { categoriesData } from '../../data/categories';
 import ProductCard from '../../components/shared/ProductCard';
 import './Products.css';
+
+const categories = [{ id: 'all', label: 'Semua' }, ...categoriesData];
 
 const sortOptions = [
     { value: 'default', label: 'Default' },

@@ -71,6 +71,9 @@ export default function Login() {
                 <p className="auth-footer">
                     Belum punya akun? <Link to="/register">Daftar sekarang</Link>
                 </p>
+                <p className="auth-footer">
+                    Kembali ke halaman utama? <Link to="/">Kembali</Link>
+                </p>
             </div>
         </div>
     );

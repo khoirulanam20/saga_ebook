@@ -3,13 +3,13 @@ import { Search, Eye, Download, X, User, Package, CreditCard, Calendar, CheckCir
 import { formatCurrency } from '../../utils/helpers';
 import './Admin.css';
 
-const transactions = [
-    { id: 'TRX-089', customer: 'Budi Santoso', email: 'budi@mail.com', phone: '0812-3456-7890', product: 'Growth Pack', productType: 'Paket', amount: 799000, status: 'Berhasil', method: 'QRIS', date: '2025-02-28', time: '10:24:33', note: 'Pembayaran langsung via QRIS' },
-    { id: 'TRX-088', customer: 'Rina Pratiwi', email: 'rina@mail.com', phone: '0813-5678-9012', product: 'Video Kelas: Instagram Marketing Mastery', productType: 'Video Kelas', amount: 299000, status: 'Berhasil', method: 'GoPay', date: '2025-02-27', time: '14:05:12', note: '' },
-    { id: 'TRX-087', customer: 'Ahmad Rahmat', email: 'ahmad@mail.com', phone: '0815-1234-5678', product: 'Ebook: SEO Mastery 2024', productType: 'Ebook', amount: 129000, status: 'Pending', method: 'Transfer BCA', date: '2025-02-27', time: '09:18:45', note: 'Menunggu konfirmasi transfer' },
-    { id: 'TRX-086', customer: 'Dewi Sutanto', email: 'dewi@mail.com', phone: '0819-8765-4321', product: 'Ultimate Pack', productType: 'Paket', amount: 1999000, status: 'Berhasil', method: 'BCA VA', date: '2025-02-26', time: '16:33:20', note: '' },
-    { id: 'TRX-085', customer: 'Hendra Wijaya', email: 'hendra@mail.com', phone: '0811-2222-3333', product: 'Webinar: Financial Planning', productType: 'Webinar', amount: 99000, status: 'Gagal', method: 'OVO', date: '2025-02-26', time: '12:00:58', note: 'Saldo OVO tidak mencukupi' },
-    { id: 'TRX-084', customer: 'Sara Kusuma', email: 'sara@mail.com', phone: '0856-4444-5555', product: 'Starter Pack', productType: 'Paket', amount: 399000, status: 'Berhasil', method: 'Mandiri VA', date: '2025-02-25', time: '08:45:01', note: '' },
+const initialTransactions = [
+    { id: 'TRX-089', customer: 'Budi Santoso', email: 'budi@mail.com', phone: '0812-3456-7890', product: 'Growth Pack', productType: 'Paket', amount: 799000, status: 'Berhasil', method: 'BCA', date: '2025-02-28', time: '10:24:33', note: 'Pembayaran otomatis terverifikasi', paymentProof: 'https://images.unsplash.com/photo-1620714223084-8fcacc6dfd8d?q=80&w=400&auto=format&fit=crop' },
+    { id: 'TRX-088', customer: 'Rina Pratiwi', email: 'rina@mail.com', phone: '0813-5678-9012', product: 'Video Kelas: Instagram Marketing Mastery', productType: 'Video Kelas', amount: 299000, status: 'Berhasil', method: 'Mandiri', date: '2025-02-27', time: '14:05:12', note: '', paymentProof: 'https://images.unsplash.com/photo-1620714223084-8fcacc6dfd8d?q=80&w=400&auto=format&fit=crop' },
+    { id: 'TRX-087', customer: 'Ahmad Rahmat', email: 'ahmad@mail.com', phone: '0815-1234-5678', product: 'Ebook: SEO Mastery 2024', productType: 'Ebook', amount: 129000, status: 'Pending', method: 'BCA', date: '2025-02-27', time: '09:18:45', note: 'Menunggu verifikasi admin', paymentProof: 'https://images.unsplash.com/photo-1620714223084-8fcacc6dfd8d?q=80&w=400&auto=format&fit=crop' },
+    { id: 'TRX-086', customer: 'Dewi Sutanto', email: 'dewi@mail.com', phone: '0819-8765-4321', product: 'Ultimate Pack', productType: 'Paket', amount: 1999000, status: 'Berhasil', method: 'BNI', date: '2025-02-26', time: '16:33:20', note: '', paymentProof: 'https://images.unsplash.com/photo-1620714223084-8fcacc6dfd8d?q=80&w=400&auto=format&fit=crop' },
+    { id: 'TRX-085', customer: 'Hendra Wijaya', email: 'hendra@mail.com', phone: '0811-2222-3333', product: 'Webinar: Financial Planning', productType: 'Webinar', amount: 99000, status: 'Gagal', method: 'BRI', date: '2025-02-26', time: '12:00:58', note: 'Bukti transfer tidak valid/palsu', paymentProof: 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?q=80&w=400&auto=format&fit=crop' },
+    { id: 'TRX-084', customer: 'Sara Kusuma', email: 'sara@mail.com', phone: '0856-4444-5555', product: 'Starter Pack', productType: 'Paket', amount: 399000, status: 'Pending', method: 'Mandiri', date: '2025-02-25', time: '08:45:01', note: 'Menunggu verifikasi admin', paymentProof: 'https://images.unsplash.com/photo-1620714223084-8fcacc6dfd8d?q=80&w=400&auto=format&fit=crop' },
 ];
 
 const statusConfig = {
@@ -19,9 +19,11 @@ const statusConfig = {
 };
 
 export default function AdminTransactions() {
+    const [transactions, setTransactions] = useState(initialTransactions);
     const [search, setSearch] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
     const [selectedTrx, setSelectedTrx] = useState(null);
+
 
     const filtered = transactions.filter(t =>
         (statusFilter === 'all' || t.status === statusFilter) &&
@@ -29,6 +31,14 @@ export default function AdminTransactions() {
     );
 
     const cfg = selectedTrx ? statusConfig[selectedTrx.status] : null;
+    const handleVerify = (id, newStatus) => {
+        setTransactions(prev => prev.map(t =>
+            t.id === id ? { ...t, status: newStatus, note: newStatus === 'Berhasil' ? 'Pembayaran diverifikasi admin' : 'Pembayaran ditolak admin' } : t
+        ));
+        toast.success(`Transaksi ${newStatus === 'Berhasil' ? 'diverifikasi' : 'ditolak'}`);
+        setSelectedTrx(null);
+    };
+
     const StatusIcon = cfg?.icon;
 
     return (
@@ -159,18 +169,27 @@ export default function AdminTransactions() {
                                 </div>
                             </div>
 
-                            {/* Payment */}
                             <div className="detail-section-block">
                                 <div className="detail-section-label"><CreditCard size={14} /> Informasi Pembayaran</div>
                                 <div className="detail-grid">
-                                    <div><span>Metode</span><strong>{selectedTrx.method}</strong></div>
+                                    <div><span>Metode Transfer</span><strong style={{ textTransform: 'uppercase' }}>{selectedTrx.method}</strong></div>
                                     <div><span>Total Bayar</span><strong style={{ color: 'var(--color-accent-light)', fontSize: 'var(--text-lg)' }}>{formatCurrency(selectedTrx.amount)}</strong></div>
                                 </div>
                             </div>
 
+                            {selectedTrx.paymentProof && (
+                                <div className="detail-section-block">
+                                    <div className="detail-section-label">📎 Bukti Pembayaran</div>
+                                    <div style={{ marginTop: 'var(--space-2)', borderRadius: 'var(--radius-md)', overflow: 'hidden', border: '1px solid var(--color-border)', backgroundColor: 'var(--color-bg)' }}>
+                                        <img src={selectedTrx.paymentProof} alt="Bukti Pembayaran" style={{ width: '100%', maxHeight: 300, objectFit: 'contain', display: 'block' }} />
+                                    </div>
+                                    <p style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)', marginTop: 'var(--space-2)' }}>Wajib diverifikasi kesesuaian nominal sebelum disetujui.</p>
+                                </div>
+                            )}
+
                             {selectedTrx.note && (
                                 <div className="detail-section-block">
-                                    <div className="detail-section-label">📝 Catatan</div>
+                                    <div className="detail-section-label">📝 Catatan Sistem</div>
                                     <p style={{ fontSize: 'var(--text-sm)', color: 'var(--color-text-secondary)' }}>{selectedTrx.note}</p>
                                 </div>
                             )}
@@ -178,13 +197,18 @@ export default function AdminTransactions() {
 
                         <div className="modal-actions">
                             {selectedTrx.status === 'Pending' && (
-                                <button className="btn-modal-save" style={{ background: 'var(--color-success)' }} onClick={() => { toast.success('Transaksi diverifikasi!'); setSelectedTrx(null); }}>
-                                    ✓ Verifikasi Pembayaran
-                                </button>
+                                <>
+                                    <button className="btn-modal-cancel" style={{ color: 'var(--color-error)' }} onClick={() => handleVerify(selectedTrx.id, 'Gagal')}>
+                                        ✕ Tolak
+                                    </button>
+                                    <button className="btn-modal-save" style={{ background: 'var(--color-success)' }} onClick={() => handleVerify(selectedTrx.id, 'Berhasil')}>
+                                        ✓ Verifikasi (Terima)
+                                    </button>
+                                </>
                             )}
                             {selectedTrx.status === 'Berhasil' && (
                                 <button className="btn-modal-save" onClick={() => toast.success('Email konfirmasi dikirim!')}>
-                                    📧 Kirim Ulang Email
+                                    📧 Kirim Ulang Email Akses
                                 </button>
                             )}
                             <button className="btn-modal-cancel" onClick={() => setSelectedTrx(null)}>Tutup</button>

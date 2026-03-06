@@ -1,11 +1,9 @@
-.user-dashboard {
-    padding-top: var(--navbar-height);
-}
+/* Spacer handled by dashboard-header padding */
 
 .dashboard-header {
     background: var(--color-bg-secondary);
     border-bottom: 1px solid var(--color-border);
-    padding: var(--space-8) 0;
+    padding: calc(var(--navbar-height) + var(--space-8)) 0 var(--space-8);
 }
 
 .dashboard-welcome {
@@ -39,7 +37,7 @@
 }
 
 .dashboard-main {
-    padding: var(--space-8) var(--space-6);
+    padding: var(--space-8) var(--space-6) var(--space-20);
     display: flex;
     flex-direction: column;
     gap: var(--space-8);

@@ -96,14 +96,6 @@ export default function ProductDetail() {
                             </div>
                         </div>
 
-                        {productTestimonials.length > 0 && (
-                            <div className="detail-section">
-                                <h2 className="detail-section-title">Testimoni Peserta</h2>
-                                <div className="grid-2">
-                                    {productTestimonials.map(t => <TestimonialCard key={t.id} testimonial={t} />)}
-                                </div>
-                            </div>
-                        )}
                     </div>
 
                     {/* Sidebar */}

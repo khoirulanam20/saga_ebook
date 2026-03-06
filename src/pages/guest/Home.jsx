@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight, BookOpen, Video, Mic, MapPin, Users, Star, Zap, Shield, Award } from 'lucide-react';
 import { products } from '../../data/products';
+import { categoriesData } from '../../data/categories';
 import { testimonials } from '../../data/testimonials';
 import { packages } from '../../data/packages';
 import ProductCard from '../../components/shared/ProductCard';
@@ -88,19 +89,21 @@ export default function Home() {
                         <h2 className="section-title">Berbagai Format<br /><span className="text-gradient">Pembelajaran</span></h2>
                     </div>
                     <div className="categories-grid">
-                        {[
-                            { icon: BookOpen, label: 'Ebook', desc: 'Buku digital lengkap & informatif', count: '12 Produk', cat: 'ebook' },
-                            { icon: Video, label: 'Video Kelas', desc: 'Pembelajaran visual step-by-step', count: '18 Kelas', cat: 'video' },
-                            { icon: Mic, label: 'Webinar', desc: 'Sesi interaktif dengan pakar', count: '8 Sesi', cat: 'webinar' },
-                            { icon: MapPin, label: 'Kelas Offline', desc: 'Pengalaman belajar langsung', count: '5 Program', cat: 'offline' },
-                        ].map(({ icon: Icon, label, desc, count, cat }) => (
-                            <Link to="/products" state={{ category: cat }} key={label} className="category-card">
-                                <div className="category-card__icon"><Icon size={24} /></div>
-                                <h3 className="category-card__title">{label}</h3>
-                                <p className="category-card__desc">{desc}</p>
-                                <span className="category-card__count">{count}</span>
-                            </Link>
-                        ))}
+                        {categoriesData.map((cat) => {
+                            const count = products.filter(p => p.category === cat.id).length;
+                            return (
+                                <Link to="/products" state={{ category: cat.id }} key={cat.id} className="category-card">
+                                    <div className="category-card__image">
+                                        <img src={cat.image} alt={cat.label} />
+                                    </div>
+                                    <div className="category-card__content">
+                                        <h3 className="category-card__title">{cat.label}</h3>
+                                        <p className="category-card__desc">{cat.desc}</p>
+                                        <span className="category-card__count">{count} Produk</span>
+                                    </div>
+                                </Link>
+                            );
+                        })}
                     </div>
                 </div>
             </section>
@@ -188,23 +191,6 @@ export default function Home() {
                 </div>
             </section>
 
-            {/* Testimonials */}
-            <section className="section">
-                <div className="container">
-                    <div className="section-header-row">
-                        <div>
-                            <p className="section-label"><Star size={14} /> Testimoni</p>
-                            <h2 className="section-title">Kata Mereka tentang<br /><span className="text-gradient">SAGA Academy</span></h2>
-                        </div>
-                        <Link to="/testimonials" className="see-all-link">Semua Testimoni <ArrowRight size={16} /></Link>
-                    </div>
-                    <div className="grid-3">
-                        {testimonials.slice(0, 3).map(t => (
-                            <TestimonialCard key={t.id} testimonial={t} />
-                        ))}
-                    </div>
-                </div>
-            </section>
 
             {/* CTA */}
             <section className="section cta-section">

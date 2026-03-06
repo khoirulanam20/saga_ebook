@@ -28,8 +28,6 @@ export default function Navbar() {
     const navLinks = [
         { to: '/', label: 'Beranda' },
         { to: '/products', label: 'Produk' },
-        { to: '/packages/growth-pack', label: 'Paket' },
-        { to: '/testimonials', label: 'Testimoni' },
         { to: '/about', label: 'Tentang Kami' },
         { to: '/contact', label: 'Kontak' },
     ];
@@ -81,6 +79,9 @@ export default function Navbar() {
                                             <LayoutDashboard size={15} /> Dashboard Saya
                                         </Link>
                                     )}
+                                    <Link to="/dashboard/edit-profile" className="navbar__dropdown-item" onClick={() => setDropdownOpen(false)}>
+                                        <User size={15} /> Edit Profil
+                                    </Link>
                                     <button className="navbar__dropdown-item navbar__dropdown-item--danger" onClick={handleLogout}>
                                         <LogOut size={15} /> Keluar
                                     </button>

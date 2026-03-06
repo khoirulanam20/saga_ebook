@@ -194,15 +194,6 @@ export default function ProductSales() {
                             </div>
                         )}
 
-                        {/* Testimonials */}
-                        {related.length > 0 && (
-                            <div className="sales-testimonials">
-                                <h3>Kata Mereka yang Sudah Belajar</h3>
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)' }}>
-                                    {related.map(t => <TestimonialCard key={t.id} testimonial={t} />)}
-                                </div>
-                            </div>
-                        )}
 
                         {/* FAQ */}
                         <div className="sales-faq">

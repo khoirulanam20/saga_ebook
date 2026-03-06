@@ -29,11 +29,13 @@ import Register from './pages/auth/Register';
 // User Pages
 import UserDashboard from './pages/user/UserDashboard';
 import UserLearning from './pages/user/UserLearning';
+import EditProfile from './pages/user/EditProfile';
 
 // Admin Pages
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminProducts from './pages/admin/AdminProducts';
 import AdminProductForm from './pages/admin/AdminProductForm';
+import AdminCategories from './pages/admin/AdminCategories';
 import AdminPackages from './pages/admin/AdminPackages';
 import AdminTransactions from './pages/admin/AdminTransactions';
 import AdminUsers from './pages/admin/AdminUsers';
@@ -121,6 +123,7 @@ export default function App() {
               {/* User Routes */}
               <Route path="/dashboard" element={<UserRoute><GuestLayout /></UserRoute>}>
                 <Route index element={<UserDashboard />} />
+                <Route path="edit-profile" element={<EditProfile />} />
               </Route>
 
               {/* Standalone User Routes (No Navbar/Footer for Learning Mode) */}
@@ -132,6 +135,7 @@ export default function App() {
                 <Route path="products" element={<AdminProducts />} />
                 <Route path="products/create" element={<AdminProductForm />} />
                 <Route path="products/:id/edit" element={<AdminProductForm />} />
+                <Route path="categories" element={<AdminCategories />} />
                 <Route path="packages" element={<AdminPackages />} />
                 <Route path="transactions" element={<AdminTransactions />} />
                 <Route path="users" element={<AdminUsers />} />

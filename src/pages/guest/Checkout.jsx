@@ -7,21 +7,19 @@ import { formatCurrency } from '../../utils/helpers';
 import toast from 'react-hot-toast';
 import './Checkout.css';
 
-const paymentMethods = [
-    { id: 'transfer', icon: Building2, label: 'Transfer Bank', banks: ['BCA', 'BNI', 'Mandiri', 'BRI'] },
-    { id: 'va', icon: CreditCard, label: 'Virtual Account', banks: ['BCA VA', 'BNI VA', 'Mandiri VA'] },
-    { id: 'qris', icon: Smartphone, label: 'QRIS', desc: 'Bayar dengan QR Code' },
-    { id: 'ewallet', icon: Wallet, label: 'E-Wallet', banks: ['GoPay', 'OVO', 'DANA', 'ShopeePay'] },
-];
+import { Upload } from 'lucide-react';
+import { initialBankAccounts } from '../admin/AdminPayment';
+
+const paymentMethods = initialBankAccounts.filter(acc => acc.enabled);
 
 export default function Checkout() {
     const { cartItems, getTotal, clearCart } = useCart();
     const { user } = useAuth();
     const navigate = useNavigate();
     const [selectedMethod, setSelectedMethod] = useState('');
-    const [selectedBank, setSelectedBank] = useState('');
     const [step, setStep] = useState(1); // 1=form, 2=payment, 3=success
     const [form, setForm] = useState({ name: user?.name || '', email: user?.email || '', phone: '' });
+    const [proofFile, setProofFile] = useState(null);
     const [processing, setProcessing] = useState(false);
 
     const total = getTotal();
@@ -34,7 +32,9 @@ export default function Checkout() {
     };
 
     const handlePay = () => {
-        if (!selectedMethod) return toast.error('Pilih metode pembayaran');
+        if (!selectedMethod) return toast.error('Pilih metode pembayaran (Bank Tujuan)');
+        if (!proofFile) return toast.error('Harap unggah bukti pembayaran');
+
         setProcessing(true);
         setTimeout(() => {
             setProcessing(false);
@@ -106,32 +106,62 @@ export default function Checkout() {
 
                         {step === 2 && (
                             <div className="checkout-card">
-                                <h2 className="checkout-card-title">Metode Pembayaran</h2>
+                                <h2 className="checkout-card-title">Transfer Manual</h2>
+                                <p className="text-muted" style={{ marginBottom: 'var(--space-4)', fontSize: 'var(--text-sm)' }}>Silakan transfer sesuai total tagihan ke salah satu rekening di bawah ini, lalu unggah buktinya.</p>
+
                                 <div className="payment-methods">
                                     {paymentMethods.map(method => (
-                                        <div key={method.id} className={`payment-option ${selectedMethod === method.id ? 'selected' : ''}`} onClick={() => { setSelectedMethod(method.id); setSelectedBank(''); }}>
+                                        <div key={method.id} className={`payment-option ${selectedMethod === method.id ? 'selected' : ''}`} onClick={() => setSelectedMethod(method.id)}>
                                             <div className="payment-option__header">
-                                                <div className="payment-icon"><method.icon size={20} /></div>
+                                                <div className="payment-icon">
+                                                    {/* Check if method.icon is a valid component (like from lucide-react) or string, default to Building2 if undefined */}
+                                                    {method.icon ? <method.icon size={20} /> : <Building2 size={20} />}
+                                                </div>
                                                 <span className="payment-label">{method.label}</span>
                                                 <div className={`payment-radio ${selectedMethod === method.id ? 'checked' : ''}`} />
                                             </div>
-                                            {selectedMethod === method.id && method.banks && (
-                                                <div className="bank-grid">
-                                                    {method.banks.map(bank => (
-                                                        <button key={bank} className={`bank-btn ${selectedBank === bank ? 'selected' : ''}`} onClick={() => setSelectedBank(bank)}>
-                                                            {bank}
-                                                        </button>
-                                                    ))}
+                                            {selectedMethod === method.id && (
+                                                <div className="bank-details" style={{ marginTop: 'var(--space-3)', padding: 'var(--space-3)', background: 'var(--color-bg)', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-border)' }}>
+                                                    <p style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)' }}>Nomor Rekening</p>
+                                                    <p style={{ fontSize: 'var(--text-lg)', fontWeight: 600, fontFamily: 'monospace', letterSpacing: '1px', color: 'var(--color-text)' }}>{method.accNo}</p>
+                                                    <p style={{ fontSize: 'var(--text-sm)', color: 'var(--color-text-secondary)', marginTop: 4 }}>Atas Nama: <strong>{method.accName}</strong></p>
                                                 </div>
-                                            )}
-                                            {method.desc && selectedMethod === method.id && (
-                                                <p className="payment-desc">{method.desc}</p>
                                             )}
                                         </div>
                                     ))}
                                 </div>
-                                <button className={`btn-hero-primary w-full ${processing ? 'loading' : ''}`} onClick={handlePay} disabled={processing}>
-                                    {processing ? 'Memproses Pembayaran...' : `Bayar ${formatCurrency(grandTotal)}`}
+
+                                <div className="proof-upload-section" style={{ marginTop: 'var(--space-6)', borderTop: '1px solid var(--color-border)', paddingTop: 'var(--space-5)' }}>
+                                    <h3 style={{ fontSize: 'var(--text-md)', marginBottom: 'var(--space-3)' }}>Upload Bukti Pembayaran</h3>
+                                    <label className="proof-upload-label" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 'var(--space-6)', border: '2px dashed var(--color-border)', borderRadius: 'var(--radius-lg)', cursor: 'pointer', background: proofFile ? 'rgba(16,185,129,0.05)' : 'var(--color-bg)', borderColor: proofFile ? 'var(--color-success)' : 'inherit', transition: 'all 0.2s' }}>
+                                        {proofFile ? (
+                                            <>
+                                                <CheckCircle2 size={32} color="var(--color-success)" style={{ marginBottom: 8 }} />
+                                                <span style={{ color: 'var(--color-success)', fontWeight: 500 }}>{proofFile.name}</span>
+                                                <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)', marginTop: 4 }}>(Klik untuk mengganti)</span>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Upload size={32} color="var(--color-text-muted)" style={{ marginBottom: 8 }} />
+                                                <span style={{ color: 'var(--color-text-secondary)', fontWeight: 500 }}>Pilih File Bukti Transfer</span>
+                                                <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)', marginTop: 4 }}>JPG, PNG, atau PDF (Max 2MB)</span>
+                                            </>
+                                        )}
+                                        <input
+                                            type="file"
+                                            accept="image/*,.pdf"
+                                            style={{ display: 'none' }}
+                                            onChange={(e) => {
+                                                if (e.target.files && e.target.files[0]) {
+                                                    setProofFile(e.target.files[0]);
+                                                }
+                                            }}
+                                        />
+                                    </label>
+                                </div>
+
+                                <button className={`btn-hero-primary w-full ${processing ? 'loading' : ''}`} style={{ marginTop: 'var(--space-5)' }} onClick={handlePay} disabled={processing}>
+                                    {processing ? 'Memproses Pesanan...' : `Konfirmasi Pembayaran ${formatCurrency(grandTotal)}`}
                                 </button>
                             </div>
                         )}

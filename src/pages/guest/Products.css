@@ -1,11 +1,9 @@
-.products-page {
-    padding-top: var(--navbar-height);
-}
+.products-page {}
 
 .products-header {
     background: var(--color-bg-secondary);
     border-bottom: 1px solid var(--color-border);
-    padding: var(--space-12) 0 var(--space-10);
+    padding: calc(var(--navbar-height) + var(--space-10)) 0 var(--space-10);
 }
 
 .products-title {
@@ -21,7 +19,7 @@
 
 .products-main {
     padding-top: var(--space-8);
-    padding-bottom: var(--space-16);
+    padding-bottom: var(--space-24);
 }
 
 .products-filters {

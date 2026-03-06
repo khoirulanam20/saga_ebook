@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Upload, X, ArrowLeft, Plus, Trash2, FileText, Video, Link as LinkIcon } from 'lucide-react';
 import { products as initialProducts } from '../../data/products';
+import { categoriesData } from '../../data/categories';
 import { getCategoryLabel } from '../../utils/helpers';
 import toast from 'react-hot-toast';
 import './Admin.css';
@@ -10,7 +11,7 @@ const emptyForm = {
     title: '', category: 'ebook', price: '', originalPrice: '',
     description: '', longDescription: '', badge: '',
     imageUrl: '', imageFile: null, imagePreview: '',
-    benefits: [], materials: [], materialFiles: []
+    benefits: [], materials: []
 };
 
 export default function AdminProductForm() {
@@ -23,6 +24,7 @@ export default function AdminProductForm() {
     const [newBenefit, setNewBenefit] = useState('');
     const [newMaterialTitle, setNewMaterialTitle] = useState('');
     const [newMaterialMeta, setNewMaterialMeta] = useState('');
+    const [newMaterialLink, setNewMaterialLink] = useState('');
 
     const fileInputRef = useRef(null);
     const materialFileInputRef = useRef(null);
@@ -39,7 +41,6 @@ export default function AdminProductForm() {
                     imageFile: null, imagePreview: p.thumbnail || '',
                     benefits: p.benefits ? [...p.benefits] : [],
                     materials: p.materials ? [...p.materials] : [],
-                    materialFiles: [] // holds newly uploaded files mapped to materials
                 });
             }
         }
@@ -65,25 +66,21 @@ export default function AdminProductForm() {
         setNewBenefit('');
     };
 
-    const addMaterial = (file = null) => {
-        if (!newMaterialTitle.trim() && !file) return;
+    const addMaterial = () => {
+        if (!newMaterialTitle.trim()) return;
 
-        const title = file ? file.name : newMaterialTitle.trim();
-        const duration = file ? (file.size / 1024 / 1024).toFixed(2) + ' MB' : (newMaterialMeta.trim() || 'N/A');
+        const title = newMaterialTitle.trim();
+        const duration = newMaterialMeta.trim() || 'N/A';
+        const link = newMaterialLink.trim();
 
         setForm(prev => ({
             ...prev,
-            materials: [...prev.materials, { title, duration, fileAttached: !!file }],
-            materialFiles: file ? [...prev.materialFiles, { index: prev.materials.length, file }] : prev.materialFiles
+            materials: [...prev.materials, { title, duration, link }]
         }));
 
         setNewMaterialTitle('');
         setNewMaterialMeta('');
-    };
-
-    const handleMaterialFile = (e) => {
-        const file = e.target.files[0];
-        if (file) addMaterial(file);
+        setNewMaterialLink('');
     };
 
     const handleSave = () => {
@@ -161,7 +158,7 @@ export default function AdminProductForm() {
                         <div className="form-group">
                             <label>Kategori</label>
                             <select value={form.category} onChange={e => setForm({ ...form, category: e.target.value })}>
-                                {['ebook', 'video', 'webinar', 'offline'].map(c => <option key={c} value={c}>{getCategoryLabel(c)}</option>)}
+                                {categoriesData.map(c => <option key={c.id} value={c.id}>{c.label}</option>)}
                             </select>
                         </div>
                         <div className="form-group">
@@ -227,26 +224,18 @@ export default function AdminProductForm() {
                     {/* Pembelajaran / Silabus */}
                     <div className="form-group" style={{ padding: 'var(--space-4)', background: 'var(--color-bg-secondary)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--color-border)' }}>
                         <label style={{ fontSize: 'var(--text-base)', color: 'var(--color-text-primary)' }}>Materi Pembelajaran / Silabus</label>
-                        <p style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)', marginBottom: 'var(--space-3)' }}>Upload file materi secara langsung sesuai kategori (PDF, MP4) atau tulis manual untuk webinar/offline.</p>
+                        <p style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)', marginBottom: 'var(--space-3)' }}>Tulis manual judul bab/materi beserta link (Zoom, Google Drive, YouTube, dll).</p>
 
-                        {/* File Upload Button directly integrated */}
-                        <div style={{ display: 'flex', gap: 8, marginBottom: 'var(--space-3)' }}>
-                            <button
-                                type="button"
-                                className="btn-modal-save"
-                                style={{ background: 'var(--color-accent-dim)', color: 'var(--color-accent-light)', border: '1px solid rgba(220, 38, 38, 0.4)', flex: 1, display: 'flex', justifyContent: 'center', gap: 8 }}
-                                onClick={() => materialFileInputRef.current?.click()}
-                            >
-                                {form.category === 'video' ? <Video size={16} /> : <FileText size={16} />}
-                                Upload File Materi ({getCategoryLabel(form.category)})
-                            </button>
-                            <input ref={materialFileInputRef} type="file" multiple={false} accept={form.category === 'video' ? "video/*" : ".pdf,.doc,.docx"} style={{ display: 'none' }} onChange={handleMaterialFile} />
-                        </div>
-
-                        <div style={{ display: 'flex', gap: 8 }}>
+                        <div style={{ display: 'flex', gap: 8, marginBottom: 'var(--space-2)' }}>
                             <input value={newMaterialTitle} onChange={e => setNewMaterialTitle(e.target.value)} placeholder="Atau tulis manual judul baba/materi..." style={{ flex: 2 }} onKeyDown={e => e.key === 'Enter' && addMaterial()} />
                             <input value={newMaterialMeta} onChange={e => setNewMaterialMeta(e.target.value)} placeholder="Durasi/Meta (opsional)" style={{ flex: 1 }} onKeyDown={e => e.key === 'Enter' && addMaterial()} />
-                            <button type="button" className="btn-modal-save" style={{ padding: 'var(--space-2) var(--space-4)', fontSize: 'var(--text-sm)' }} onClick={() => addMaterial(null)}>+ Tambah</button>
+                        </div>
+                        <div style={{ display: 'flex', gap: 8 }}>
+                            <div style={{ flex: 1, display: 'flex', alignItems: 'center', background: 'var(--color-bg)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', padding: '0 12px' }}>
+                                <LinkIcon size={14} color="var(--color-text-muted)" style={{ flexShrink: 0 }} />
+                                <input value={newMaterialLink} onChange={e => setNewMaterialLink(e.target.value)} placeholder="Link eksternal (Zoom, GDrive, dll) - Opsional" style={{ flex: 1, border: 'none', background: 'transparent', outline: 'none', height: '100%', padding: '10px 8px', color: 'var(--color-text-primary)' }} onKeyDown={e => e.key === 'Enter' && addMaterial()} />
+                            </div>
+                            <button type="button" className="btn-modal-save" style={{ padding: 'var(--space-2) var(--space-4)', fontSize: 'var(--text-sm)' }} onClick={addMaterial}>+ Tambah</button>
                         </div>
 
                         {form.materials.length > 0 && (
@@ -255,14 +244,16 @@ export default function AdminProductForm() {
                                     <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 12px', background: 'var(--color-bg)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', fontSize: 'var(--text-sm)' }}>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                                             <span style={{ fontWeight: 600, color: 'var(--color-text-muted)' }}>{String(i + 1).padStart(2, '0')}</span>
-                                            {m.fileAttached && (form.category === 'video' ? <Video size={14} color="var(--color-success)" /> : <FileText size={14} color="var(--color-success)" />)}
-                                            <span>{m.title}</span>
+                                            {m.link ? <LinkIcon size={14} color="var(--color-accent)" /> : <FileText size={14} color="var(--color-text-muted)" />}
+                                            <span style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                                                <span>{m.title}</span>
+                                                {m.link && <span style={{ fontSize: '11px', color: 'var(--color-text-muted)' }}>{m.link}</span>}
+                                            </span>
                                             <span style={{ color: 'var(--color-accent)', fontSize: '11px', padding: '2px 6px', background: 'var(--color-accent-dim)', borderRadius: 4 }}>{m.duration || m.pages || m.videos}</span>
                                         </div>
                                         <button type="button" onClick={() => setForm(prev => ({
                                             ...prev,
-                                            materials: prev.materials.filter((_, idx) => idx !== i),
-                                            materialFiles: prev.materialFiles.filter(f => f.index !== i)
+                                            materials: prev.materials.filter((_, idx) => idx !== i)
                                         }))} style={{ color: 'var(--color-error)' }}><Trash2 size={14} /></button>
                                     </div>
                                 ))}

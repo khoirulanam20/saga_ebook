@@ -1,3 +1,5 @@
+import { categoriesData } from '../data/categories';
+
 export const formatCurrency = (amount) => {
     return new Intl.NumberFormat('id-ID', {
         style: 'currency',
@@ -23,13 +25,8 @@ export const getCategoryIcon = (category) => {
 };
 
 export const getCategoryLabel = (category) => {
-    const labels = {
-        ebook: 'Ebook',
-        video: 'Video Kelas',
-        webinar: 'Webinar',
-        offline: 'Kelas Offline',
-    };
-    return labels[category] || category;
+    const found = categoriesData.find(c => c.id === category);
+    return found ? found.label : category;
 };
 
 export const generateStars = (rating) => {

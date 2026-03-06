@@ -12,7 +12,6 @@ const productLinks = [
 const companyLinks = [
     { label: 'Tentang Kami', to: '/about' },
     { label: 'Testimoni', to: '/testimonials' },
-    { label: 'Paket Bundling', to: '/packages/growth-pack' },
     { label: 'Kontak', to: '/contact' },
 ];
 
@@ -101,7 +100,7 @@ export default function Footer() {
                                 </li>
                             ))}
                         </ul>
-                        <Link to="/packages/growth-pack" className="footer__cta-btn">
+                        <Link to="/products" className="footer__cta-btn">
                             <Zap size={14} /> Mulai Belajar Sekarang
                         </Link>
                     </div>

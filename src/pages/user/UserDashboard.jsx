@@ -7,9 +7,11 @@ import { formatCurrency, getCategoryLabel } from '../../utils/helpers';
 import './UserDashboard.css';
 
 const transactions = [
-    { id: 'TRX-001', date: '2025-01-15', products: 'Ebook Strategi Bisnis Digital', amount: 149000, status: 'Berhasil' },
-    { id: 'TRX-002', date: '2025-01-22', products: 'Video Kelas Instagram Marketing', amount: 299000, status: 'Berhasil' },
+    { id: 'TRX-001', date: '2025-01-15', products: 'Ebook: Strategi Bisnis Digital 2024', amount: 149000, status: 'Berhasil' },
+    { id: 'TRX-002', date: '2025-01-22', products: 'Video Kelas: Instagram Marketing Mastery', amount: 299000, status: 'Berhasil' },
     { id: 'TRX-003', date: '2025-02-05', products: 'Growth Pack', amount: 799000, status: 'Berhasil' },
+    { id: 'TRX-087', date: '2025-02-27', products: 'Ebook: SEO Mastery 2024', amount: 129000, status: 'Pending' },
+    { id: 'TRX-085', date: '2025-02-26', products: 'Webinar: Financial Planning', amount: 99000, status: 'Gagal' },
 ];
 
 export default function UserDashboard() {
@@ -90,18 +92,9 @@ export default function UserDashboard() {
                                     <p className="my-product-cat">{getCategoryLabel(product.category)}</p>
                                     <h3 className="my-product-title">{product.title}</h3>
                                     <div className="my-product-actions">
-                                        {product.category === 'ebook' && (
-                                            <button className="access-btn" onClick={() => navigate(`/dashboard/learning/${product.id}`)}><Download size={14} /> Unduh / Baca</button>
-                                        )}
-                                        {product.category === 'video' && (
-                                            <button className="access-btn" onClick={() => navigate(`/dashboard/learning/${product.id}`)}><Video size={14} /> Tonton</button>
-                                        )}
-                                        {product.category === 'webinar' && (
-                                            <button className="access-btn" onClick={() => navigate(`/dashboard/learning/${product.id}`)}><ExternalLink size={14} /> Akses Link</button>
-                                        )}
-                                        {product.category === 'offline' && (
-                                            <button className="access-btn" onClick={() => navigate(`/dashboard/learning/${product.id}`)}><ExternalLink size={14} /> Jadwal</button>
-                                        )}
+                                        <button className="access-btn" onClick={() => navigate(`/dashboard/learning/${product.id}`)}>
+                                            <ExternalLink size={14} /> Lihat
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -130,7 +123,11 @@ export default function UserDashboard() {
                                         <td>{t.date}</td>
                                         <td>{t.products}</td>
                                         <td>{formatCurrency(t.amount)}</td>
-                                        <td><span className="status-badge success">{t.status}</span></td>
+                                        <td>
+                                            <span className={`status-badge ${t.status === 'Berhasil' ? 'success' : t.status === 'Pending' ? 'warning' : 'error'}`}>
+                                                {t.status}
+                                            </span>
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -138,28 +135,6 @@ export default function UserDashboard() {
                     </div>
                 </div>
 
-                {/* Profile */}
-                <div className="dashboard-section">
-                    <h2 className="section-heading">Profil Saya</h2>
-                    <div className="profile-card">
-                        <div className="profile-avatar-big">{user?.name?.[0]}</div>
-                        <div className="profile-info">
-                            <div className="profile-field">
-                                <label>Nama Lengkap</label>
-                                <p>{user?.name}</p>
-                            </div>
-                            <div className="profile-field">
-                                <label>Email</label>
-                                <p>{user?.email}</p>
-                            </div>
-                            <div className="profile-field">
-                                <label>Role</label>
-                                <p className="capitalize">{user?.role}</p>
-                            </div>
-                            <button className="btn-edit-profile">Edit Profil</button>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     );

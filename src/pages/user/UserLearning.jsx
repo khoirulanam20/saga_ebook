@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, PlayCircle, FileText, CheckCircle2, Download, Play, ChevronRight, Lock } from 'lucide-react';
+import { Star, Check, ArrowLeft, ExternalLink, Link as LinkIcon, Download, PlayCircle, FileText } from 'lucide-react';
 import { products } from '../../data/products';
 import { getCategoryLabel } from '../../utils/helpers';
 import toast from 'react-hot-toast';
+import '../guest/ProductDetail.css'; // Reusing the exact same ProductDetail CSS
 import './UserLearning.css';
 
 export default function UserLearning() {
@@ -11,177 +12,135 @@ export default function UserLearning() {
     const navigate = useNavigate();
     const product = products.find(p => p.id === Number(id));
 
-    // We default to index 0, but if there are no materials we handle gracefully
-    const [activeIdx, setActiveIdx] = useState(0);
+    if (!product) {
+        toast.error('Produk tidak ditemukan');
+        navigate('/dashboard');
+        return null;
+    }
 
-    // Simulate some completed chapters
-    const [completed, setCompleted] = useState([0]);
-
-    useEffect(() => {
-        if (!product) {
-            toast.error('Produk tidak ditemukan');
-            navigate('/dashboard');
-        }
-    }, [product, navigate]);
-
-    if (!product) return null;
-
-    const materials = product.materials || [
-        { title: 'Pengenalan Materi Dasar', duration: '12 min' },
-        { title: 'Persiapan & Tools yang Digunakan', duration: '15 min' },
-        { title: 'Penerapan Langkah demi Langkah', duration: '45 min' },
-        { title: 'Tips Tingkat Lanjut', duration: '20 min' },
-        { title: 'Studi Kasus: Membedah Kesuksesan', duration: '30 min' },
+    const materials = product.materials && product.materials.length > 0 ? product.materials : [
+        { title: 'Grup Komunitas Premium', duration: 'Akses Selamanya', link: 'https://t.me/saga_community_dummy' },
+        { title: 'Link Download Modul PDF', duration: '12 MB', link: 'https://gdrive.link/dummy_modul' },
+        { title: 'Rekaman Webinar Sesi 1', duration: '1h 45m', link: 'https://youtube.com/dummy_video_1' },
     ];
 
-    const activeMaterial = materials[activeIdx];
-    const isVideo = product.category === 'video' || product.category === 'webinar';
-    const isEbook = product.category === 'ebook';
-
-    const handleComplete = () => {
-        if (!completed.includes(activeIdx)) {
-            setCompleted(prev => [...prev, activeIdx]);
-            toast.success('Materi ditandai selesai! 🎉');
-        }
-
-        // Auto go next
-        if (activeIdx < materials.length - 1) {
-            setActiveIdx(activeIdx + 1);
+    const handleOpenLink = (m) => {
+        if (m.link) {
+            window.open(m.link, '_blank', 'noopener,noreferrer');
+        } else {
+            toast.error('Link materi belum tersedia.');
         }
     };
 
     return (
-        <div className="user-learning">
-            {/* Header */}
-            <header className="learning-header">
-                <Link to="/dashboard" className="learning-back">
-                    <ArrowLeft size={18} />
-                    <span>Kembali ke Dashboard</span>
-                </Link>
-                <h1 className="learning-title">{product.title}</h1>
-                <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
-                    <span className="badge-cat">{getCategoryLabel(product.category)}</span>
-                </div>
-            </header>
+        <div className="product-detail">
+            {/* We reuse .product-detail class to get the exact layout from ProductDetail */}
+            <div className="container product-detail__inner">
+                <Link to="/dashboard" className="back-link"><ArrowLeft size={16} /> Kembali ke Dashboard</Link>
 
-            <div className="learning-layout">
-                {/* Sidebar - Playlist / Chapters */}
-                <aside className="learning-sidebar">
-                    <div className="sidebar-header">
-                        <h3>Daftar Materi</h3>
-                        <p style={{ fontSize: '12px', color: 'var(--color-text-muted)', marginTop: 4 }}>
-                            {completed.length} dari {materials.length} Selesai ({Math.round((completed.length / materials.length) * 100)}%)
-                        </p>
-                        <div style={{ width: '100%', height: 4, background: 'var(--color-bg)', borderRadius: 2, marginTop: 8, overflow: 'hidden' }}>
-                            <div style={{ height: '100%', background: 'var(--color-success)', width: `${(completed.length / materials.length) * 100}%`, transition: 'width 0.3s ease' }} />
+                <div className="product-detail__layout">
+                    {/* Left - Main Content */}
+                    <div className="product-detail__main">
+                        <div className="product-detail__hero-img">
+                            <img src={product.thumbnail} alt={product.title} />
+                            {product.badge && <span className="detail-badge">{product.badge}</span>}
                         </div>
-                    </div>
 
-                    <div className="learning-materials">
-                        {materials.map((m, i) => {
-                            const isActive = i === activeIdx;
-                            const isDone = completed.includes(i);
-                            const iconSize = 16;
+                        <div className="detail-section">
+                            <h2 className="detail-section-title">Deskripsi Produk</h2>
+                            <p className="detail-desc">{product.longDescription || product.description}</p>
+                        </div>
 
-                            return (
-                                <div
-                                    key={i}
-                                    className={`material-item ${isActive ? 'active' : ''}`}
-                                    onClick={() => setActiveIdx(i)}
-                                >
-                                    <div className="material-icon">
-                                        {isDone ? (
-                                            <CheckCircle2 size={iconSize} color="var(--color-success)" />
-                                        ) : isVideo ? (
-                                            <PlayCircle size={iconSize} color={isActive ? "var(--color-accent-light)" : "var(--color-text-muted)"} />
-                                        ) : (
-                                            <FileText size={iconSize} color={isActive ? "var(--color-accent-light)" : "var(--color-text-muted)"} />
-                                        )}
+                        <div className="detail-section">
+                            <h2 className="detail-section-title">Apa yang Anda Dapatkan</h2>
+                            <div className="benefits-list">
+                                {product.benefits?.map((b, i) => (
+                                    <div key={i} className="benefit-item">
+                                        <div className="benefit-check"><Check size={14} /></div>
+                                        <span>{b}</span>
                                     </div>
-                                    <div className="material-info">
-                                        <div className="material-title">{i + 1}. {m.title}</div>
-                                        <div className="material-meta">
-                                            {m.duration || m.pages || m.videos || (isVideo ? 'Video' : 'Modul')}
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="detail-section">
+                            <h2 className="detail-section-title">Materi Pembelajaran</h2>
+                            <p className="detail-desc" style={{ marginBottom: 'var(--space-4)' }}>Klik pada modul materi di bawah ini untuk langsung diarahkan ke tautan yang sesuai.</p>
+
+                            <div className="materials-list">
+                                {materials.map((m, i) => (
+                                    <div
+                                        key={i}
+                                        className="material-item"
+                                        onClick={() => handleOpenLink(m)}
+                                        style={{ cursor: 'pointer', transition: 'all 0.2s ease', border: '1px solid var(--color-border)' }}
+                                        onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--color-accent)'; e.currentTarget.style.backgroundColor = 'var(--color-bg-secondary)'; }}
+                                        onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--color-border)'; e.currentTarget.style.backgroundColor = 'transparent'; }}
+                                    >
+                                        <div className="material-title" style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
+                                            <span className="material-num">{String(i + 1).padStart(2, '0')}</span>
+                                            {m.link ? <LinkIcon size={16} color="var(--color-accent)" /> : <FileText size={16} color="var(--color-text-muted)" />}
+                                            {m.title}
+                                        </div>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)' }}>
+                                            <span className="material-meta">
+                                                {m.duration || 'Eksternal Link'}
+                                            </span>
+                                            <ExternalLink size={16} color="var(--color-text-muted)" />
                                         </div>
                                     </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Right - Sidebar */}
+                    <div className="product-detail__sidebar">
+                        <div className="detail-card">
+                            <div className="detail-card__category">
+                                <span>{getCategoryLabel(product.category)}</span>
+                            </div>
+                            <h1 className="detail-card__title">{product.title}</h1>
+
+                            <div className="detail-card__rating">
+                                {Array.from({ length: 5 }).map((_, i) => (
+                                    <Star key={i} size={16} fill={i < Math.floor(product.rating || 5) ? 'currentColor' : 'none'} />
+                                ))}
+                                <span className="rating-num">{product.rating || 5.0}</span>
+                            </div>
+
+                            <div className="detail-card__price" style={{ marginTop: 'var(--space-4)', marginBottom: 'var(--space-4)' }}>
+                                <span className="price-big" style={{ fontSize: 'var(--text-xl)', color: 'var(--color-success)' }}>
+                                    <Check size={20} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 6 }} />
+                                    Sudah Dibeli
+                                </span>
+                            </div>
+
+                            {product.schedule && (
+                                <div className="detail-schedule">
+                                    📅 {product.schedule}
                                 </div>
-                            );
-                        })}
-                    </div>
-                </aside>
+                            )}
 
-                {/* Main Content Area */}
-                <main className="learning-main">
-
-                    {/* VIDEO PLAYER */}
-                    {isVideo && (
-                        <div className="video-container">
-                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: 'rgba(255,255,255,0.7)', padding: 'var(--space-8)' }}>
-                                <PlayCircle size={64} style={{ marginBottom: 'var(--space-4)', opacity: 0.8 }} />
-                                <h3 style={{ fontSize: 'var(--text-xl)', marginBottom: 'var(--space-2)', color: 'white' }}>{activeMaterial?.title}</h3>
-                                <p style={{ fontSize: 'var(--text-sm)', opacity: 0.6 }}>Video Simulation Player</p>
-                            </div>
-                            {/* Real implementation would use: <video src={activeMaterial.url} controls /> */}
-                        </div>
-                    )}
-
-                    {/* EBOOK VIEWER */}
-                    {isEbook && (
-                        <div className="ebook-container">
-                            <div className="ebook-icon-wrap">
-                                <FileText size={40} color="var(--color-accent)" />
-                            </div>
-                            <h2 style={{ fontSize: 'var(--text-2xl)', fontWeight: 'bold', marginBottom: 'var(--space-2)' }}>{activeMaterial?.title}</h2>
-                            <p style={{ color: 'var(--color-text-secondary)', marginBottom: 'var(--space-6)' }}>Silakan baca modul ini atau unduh untuk dibaca offline.</p>
-
-                            <div style={{ display: 'flex', gap: 'var(--space-4)' }}>
-                                <button className="btn-hero-primary" style={{ padding: '12px 24px', fontSize: '14px' }} onClick={handleComplete}>
-                                    <BookOpen size={16} style={{ marginRight: 8 }} /> Baca Online
-                                </button>
-                                <button className="btn-admin-primary" style={{ padding: '12px 24px', fontSize: '14px', background: 'var(--color-bg-secondary)', color: 'var(--color-text-primary)' }}>
-                                    <Download size={16} /> Unduh PDF
+                            <div className="detail-card__actions">
+                                {/* Direct user to curriculum directly via scroll to view the links */}
+                                <button className="btn-buy" onClick={() => window.scrollTo({ top: document.querySelector('.materials-list').offsetTop - 100, behavior: 'smooth' })}>
+                                    Mulai Belajar
                                 </button>
                             </div>
-                        </div>
-                    )}
 
-                    {/* DETAILS BELOW CONTENT */}
-                    <div className="content-details">
-                        <h2 className="content-title">{activeMaterial?.title}</h2>
-                        <div className="content-meta">
-                            {isVideo && <span><Play size={14} style={{ verticalAlign: 'text-bottom', marginRight: 4 }} /> {activeMaterial?.duration || '15 mins'}</span>}
-                            <span>Modul {activeIdx + 1} dari {materials.length}</span>
-                        </div>
-
-                        <div className="content-desc">
-                            <p style={{ marginBottom: 'var(--space-3)' }}>
-                                Ini adalah deskripsi materi untuk bagian: <strong>{activeMaterial?.title}</strong>. Pelajari dengan saksama dan pastikan Anda mempraktikkan hal-hal yang diajarkan dalam bab ini sebelum melangkah ke bab selanjutnya.
-                            </p>
-                            <p>
-                                Jika Anda mengalami kesulitan atau ada pertanyaan seputar bab ini, jangan ragu untuk berdiskusi di grup komunitas tertutup kita.
-                            </p>
-                        </div>
-
-                        <div style={{ marginTop: 'var(--space-8)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <button
-                                className="btn-modal-cancel"
-                                disabled={activeIdx === 0}
-                                onClick={() => setActiveIdx(prev => prev - 1)}
-                            >
-                                Sebelumnya
-                            </button>
-
-                            <button
-                                className="btn-modal-save"
-                                style={{ display: 'flex', alignItems: 'center', gap: 6, opacity: completed.includes(activeIdx) ? 0.7 : 1 }}
-                                onClick={handleComplete}
-                            >
-                                {completed.includes(activeIdx) ? 'Sudah Selesai' : 'Tandai Selesai & Lanjut'} <ChevronRight size={16} />
-                            </button>
+                            <div className="detail-card__guarantees">
+                                {['Akses Seumur Hidup', 'Materi Terupdate', 'Dukungan Komunitas'].map(g => (
+                                    <div key={g} className="guarantee-item">
+                                        <Check size={14} className="g-check" />
+                                        {g}
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     </div>
 
-                </main>
+                </div>
             </div>
         </div>
     );
