@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Save, Plus, Trash2, Building2, CheckCircle } from 'lucide-react';
+import { Save, Plus, Trash2, Building2, CheckCircle, Edit2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import './Admin.css';
 
@@ -15,6 +15,7 @@ export const initialBankAccounts = [
 export default function AdminPayment() {
     const [accounts, setAccounts] = useState(initialBankAccounts);
     const [showForm, setShowForm] = useState(false);
+    const [editingId, setEditingId] = useState(null);
     const [formData, setFormData] = useState({ id: '', label: '', accName: '', accNo: '' });
 
     const toggleAccount = (id) => setAccounts(prev => prev.map(a => a.id === id ? { ...a, enabled: !a.enabled } : a));
@@ -24,22 +25,38 @@ export default function AdminPayment() {
         toast.success('Rekening berhasil dihapus');
     };
 
+    const handleEdit = (acc) => {
+        setFormData({ id: acc.id, label: acc.label, accName: acc.accName, accNo: acc.accNo });
+        setEditingId(acc.id);
+        setShowForm(true);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
     const handleSaveAccount = (e) => {
         e.preventDefault();
         if (!formData.label || !formData.accNo || !formData.accName) return toast.error('Harap lengkapi semua field!');
 
-        setAccounts(prev => [
-            ...prev,
-            {
-                ...formData,
-                id: formData.label.toLowerCase().replace(/\s+/g, '-'),
-                icon: Building2,
-                enabled: true
-            }
-        ]);
+        if (editingId) {
+            setAccounts(prev => prev.map(a =>
+                a.id === editingId ? { ...a, label: formData.label, accNo: formData.accNo, accName: formData.accName } : a
+            ));
+            toast.success('Rekening berhasil diperbarui');
+        } else {
+            setAccounts(prev => [
+                ...prev,
+                {
+                    ...formData,
+                    id: formData.label.toLowerCase().replace(/\s+/g, '-'),
+                    icon: Building2,
+                    enabled: true
+                }
+            ]);
+            toast.success('Rekening berhasil ditambahkan');
+        }
+
         setFormData({ id: '', label: '', accName: '', accNo: '' });
+        setEditingId(null);
         setShowForm(false);
-        toast.success('Rekening berhasil ditambahkan');
     };
 
     return (
@@ -48,15 +65,25 @@ export default function AdminPayment() {
                 <h1>Pengaturan Pembayaran (Transfer Bank)</h1>
                 <p className="admin-page-subtitle">Kelola daftar rekening bank tujuan untuk pembayaran manual</p>
                 <div style={{ marginTop: 'var(--space-4)' }}>
-                    <button className="btn-admin-primary" onClick={() => setShowForm(!showForm)}>
-                        {showForm ? 'Batal Tambah' : <><Plus size={16} /> Tambah Rekening</>}
+                    <button className="btn-admin-primary" onClick={() => {
+                        if (showForm) {
+                            setShowForm(false);
+                            setEditingId(null);
+                            setFormData({ id: '', label: '', accName: '', accNo: '' });
+                        } else {
+                            setShowForm(true);
+                            setEditingId(null);
+                            setFormData({ id: '', label: '', accName: '', accNo: '' });
+                        }
+                    }}>
+                        {showForm ? 'Batal' : <><Plus size={16} /> Tambah Rekening</>}
                     </button>
                 </div>
             </div>
 
             {showForm && (
                 <div className="admin-table-card" style={{ padding: 'var(--space-6)', marginBottom: 'var(--space-6)' }}>
-                    <h3 style={{ fontWeight: 600, marginBottom: 'var(--space-5)' }}>Tambah Rekening Baru</h3>
+                    <h3 style={{ fontWeight: 600, marginBottom: 'var(--space-5)' }}>{editingId ? 'Edit Rekening' : 'Tambah Rekening Baru'}</h3>
                     <form onSubmit={handleSaveAccount} style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr)', gap: 'var(--space-4)' }}>
                         <div className="form-group" style={{ marginBottom: 0 }}>
                             <label>Nama Bank (Contoh: BCA, BNI, Mandiri)</label>
@@ -94,6 +121,9 @@ export default function AdminPayment() {
                             {acc.enabled && <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-success)', fontWeight: 600, background: 'rgba(16,185,129,0.12)', padding: '3px 10px', borderRadius: 'var(--radius-full)' }}>Aktif</span>}
                             <button onClick={() => toggleAccount(acc.id)} style={{ padding: 'var(--space-2) var(--space-4)', borderRadius: 'var(--radius-md)', fontSize: 'var(--text-sm)', fontWeight: 600, background: acc.enabled ? 'rgba(239,68,68,0.1)' : 'var(--gradient-accent)', color: acc.enabled ? 'var(--color-error)' : 'white', border: 'none', cursor: 'pointer' }}>
                                 {acc.enabled ? 'Nonaktifkan' : 'Aktifkan'}
+                            </button>
+                            <button onClick={() => handleEdit(acc)} style={{ padding: 'var(--space-2)', borderRadius: 'var(--radius-md)', background: 'transparent', color: 'var(--color-text-muted)', border: '1px solid var(--color-border)', cursor: 'pointer', transition: 'all 0.2s' }} className="hover-accent">
+                                <Edit2 size={16} />
                             </button>
                             <button onClick={() => handleDelete(acc.id)} style={{ padding: 'var(--space-2)', borderRadius: 'var(--radius-md)', background: 'transparent', color: 'var(--color-text-muted)', border: '1px solid var(--color-border)', cursor: 'pointer', transition: 'all 0.2s' }} className="hover-error">
                                 <Trash2 size={16} />
