@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Save, Megaphone, PanelLeftClose, PanelLeftOpen, PackagePlus, Trash2 } from 'lucide-react';
+import { Save, Megaphone, PanelLeftClose, PanelLeftOpen, PackagePlus, Trash2, Copy } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useContent } from '../../context/ContentContext';
 import { products } from '../../data/products';
@@ -23,6 +23,12 @@ export default function AdminAds() {
 
     const handleSave = () => {
         toast.success('Perubahan Ads Page berhasil disimpan secara permanen!');
+    };
+
+    const handleCopyUrl = () => {
+        const url = `${window.location.origin}/ads`;
+        navigator.clipboard.writeText(url);
+        toast.success('URL Penawaran berhasil disalin!');
     };
 
     const addProduct = (productId) => {
@@ -146,7 +152,12 @@ export default function AdminAds() {
                                 {isSidebarOpen ? <PanelLeftClose size={18} /> : <PanelLeftOpen size={18} />}
                             </button>
                         </div>
-                        <div className="cms-url-bar">saga-academy.com/ads</div>
+                        <div className="cms-url-bar" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                            <span>{window.location.host}/ads</span>
+                            <button onClick={handleCopyUrl} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-text-muted)', display: 'flex', alignItems: 'center', padding: 4 }} title="Copy URL Penawaran">
+                                <Copy size={14} />
+                            </button>
+                        </div>
                         <div className="cms-preview-badge">✨ Live Preview</div>
                     </div>
 
