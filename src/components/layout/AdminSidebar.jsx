@@ -1,7 +1,7 @@
 import { NavLink, Link, useNavigate } from 'react-router-dom';
 import {
     LayoutDashboard, Package, BoxSelect, Receipt, Users,
-    MessageSquare, FileEdit, CreditCard, Bot, LogOut, ChevronRight, Menu
+    MessageSquare, FileEdit, CreditCard, Bot, LogOut, ChevronRight, Menu, Megaphone
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import './AdminSidebar.css';
@@ -14,6 +14,7 @@ const menuItems = [
     { to: '/admin/users', icon: Users, label: 'Pengguna' },
     { to: '/admin/testimonials', icon: MessageSquare, label: 'Testimoni (Soon)' },
     { to: '/admin/content', icon: FileEdit, label: 'Konten' },
+    { to: '/admin/ads', icon: Megaphone, label: 'Ads Page' },
     { to: '/admin/payment', icon: CreditCard, label: 'Pembayaran' },
     { to: '/admin/chatbot', icon: Bot, label: 'Chatbot AI' },
 ];

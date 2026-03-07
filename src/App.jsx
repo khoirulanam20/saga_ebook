@@ -21,6 +21,7 @@ import Checkout from './pages/guest/Checkout';
 import Testimonials from './pages/guest/Testimonials';
 import About from './pages/guest/About';
 import Contact from './pages/guest/Contact';
+import Ads from './pages/guest/Ads';
 
 // Auth Pages
 import Login from './pages/auth/Login';
@@ -41,6 +42,7 @@ import AdminTransactions from './pages/admin/AdminTransactions';
 import AdminUsers from './pages/admin/AdminUsers';
 import AdminTestimonials from './pages/admin/AdminTestimonials';
 import AdminContent from './pages/admin/AdminContent';
+import AdminAds from './pages/admin/AdminAds';
 import AdminPayment from './pages/admin/AdminPayment';
 import AdminChatbot from './pages/admin/AdminChatbot';
 
@@ -111,6 +113,9 @@ export default function App() {
                 <Route path="/contact" element={<Contact />} />
               </Route>
 
+              {/* Standalone Ads Route - Minimalist, no Navbar/Footer */}
+              <Route path="/ads" element={<Ads />} />
+
               {/* Checkout Route - Protected (must be logged in) */}
               <Route path="/checkout" element={<UserRoute><GuestLayout /></UserRoute>}>
                 <Route index element={<Checkout />} />
@@ -141,6 +146,7 @@ export default function App() {
                 <Route path="users" element={<AdminUsers />} />
                 <Route path="testimonials" element={<AdminTestimonials />} />
                 <Route path="content" element={<AdminContent />} />
+                <Route path="ads" element={<AdminAds />} />
                 <Route path="payment" element={<AdminPayment />} />
                 <Route path="chatbot" element={<AdminChatbot />} />
               </Route>

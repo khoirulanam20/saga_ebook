@@ -22,6 +22,12 @@ const defaultContent = {
         email: 'hello@saga-academy.com',
         phone: '+62 812 3456 7890',
         address: 'Jl. Digital Valley No. 8, Jakarta Selatan 12345, Indonesia'
+    },
+    ads: {
+        heroTitle: 'Bongkar Rahasia Bisnis Beromset Ratusan Juta',
+        heroSubtitle: 'Pelajari strategi digital yang telah terbukti menghasilkan ratusan juta rupiah per bulan tanpa harus punya produk sendiri.',
+        videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+        selectedProductIds: [1] // Default ID of default featured product
     }
 };
 
