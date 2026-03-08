@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { CreditCard, Smartphone, Building2, Wallet, CheckCircle2, ShoppingBag } from 'lucide-react';
+import { CreditCard, Smartphone, Building2, Wallet, CheckCircle2, ShoppingBag, Trash2 } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import { formatCurrency } from '../../utils/helpers';
@@ -13,7 +13,7 @@ import { initialBankAccounts } from '../admin/AdminPayment';
 const paymentMethods = initialBankAccounts.filter(acc => acc.enabled);
 
 export default function Checkout() {
-    const { cartItems, getTotal, clearCart } = useCart();
+    const { cartItems, getTotal, clearCart, removeFromCart } = useCart();
     const { user } = useAuth();
     const navigate = useNavigate();
     const [selectedMethod, setSelectedMethod] = useState('');
@@ -174,8 +174,19 @@ export default function Checkout() {
                             <div className="order-items">
                                 {cartItems.map(item => (
                                     <div key={item.id} className="order-item">
-                                        <span className="order-item-name">{item.title}</span>
-                                        <span className="order-item-price">{formatCurrency(item.price)}</span>
+                                        <div className="order-item-main">
+                                            <span className="order-item-name">{item.title}</span>
+                                            <span className="order-item-price">{formatCurrency(item.price)}</span>
+                                        </div>
+                                        {step === 1 && (
+                                            <button
+                                                className="btn-remove-item"
+                                                onClick={() => removeFromCart(item.id)}
+                                                title="Hapus produk"
+                                            >
+                                                <Trash2 size={14} />
+                                            </button>
+                                        )}
                                     </div>
                                 ))}
                             </div>

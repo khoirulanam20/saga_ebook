@@ -47,6 +47,7 @@ export default function AdminSidebar({ isCollapsed, toggleSidebar }) {
                         key={to}
                         to={to}
                         end={end}
+                        target="_self"
                         className={({ isActive }) => `admin-sidebar__link ${isActive ? 'active' : ''}`}
                         title={isCollapsed ? label : undefined}
                     >

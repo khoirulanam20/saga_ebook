@@ -29,12 +29,11 @@ export default function Ads({ previewMode = false }) {
     const handleBuy = (e, product) => {
         if (previewMode) {
             e.preventDefault();
-            toast.success(`Simulasi: Menambahkan "${product.title}" ke keranjang dan diarahkan ke Checkout.`);
+            toast.success(`Simulasi: Diarahkan ke detail produk "${product.title}".`);
             return;
         }
 
-        addToCart(product);
-        navigate('/checkout');
+        navigate(`/products/${product.id}`);
     };
 
     // Find actual products based on selected IDs
